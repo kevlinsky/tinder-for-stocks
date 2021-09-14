@@ -7,9 +7,9 @@ name = "pypi"
 fastapi = "*"
 uvicorn = "*"
 alembic = "*"
-psycopg2-binary = "*"
 fastapi-sqlalchemy = "*"
 pydantic = "*"
+asyncpg = "*"
 
 [dev-packages]
 
