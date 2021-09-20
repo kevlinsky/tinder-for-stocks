@@ -10,6 +10,9 @@ alembic = "*"
 fastapi-sqlalchemy = "*"
 pydantic = "*"
 asyncpg = "*"
+databases = {extras = ["postgresql"], version = "*"}
+passlib = {extras = ["bcrypt"], version = "*"}
+pyjwt = "*"
 
 [dev-packages]
 
