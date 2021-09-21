@@ -1,4 +1,5 @@
 from sqlalchemy.future import select
+from sqlalchemy import delete
 from sqlalchemy import update as sqlalchemy_update
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 from sqlalchemy.ext.declarative import declarative_base
@@ -65,8 +66,14 @@ class ModelAdmin:
             result = results[0]
         return result
 
+    @classmethod
+    async def delete(cls, id):
+        query = delete(cls).where(cls.id == id)
+        await async_db_session.execute(query)
+        await async_db_session.commit()
+
 
 # Imports for alembic autogenerate function
-from user.models import User, UserScreener, UserStockNotifier, UserFavoriteStock
+from user.models import User, UserScreener, UserStockNotifier, UserFavoriteStock, UserCode, CodeTargetEnum
 from stock.models import Stock
 from screener.models import Screener
