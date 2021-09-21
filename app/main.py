@@ -1,4 +1,5 @@
 from random import sample
+import datetime
 
 from fastapi import FastAPI, Security, HTTPException
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
@@ -95,6 +96,18 @@ async def request_password_reset(request_model: PasswordResetRequestModel):
     if user is None:
         return HTTPException(status_code=401, detail='User not found')
     else:
+        check_code = await UserCode.get_by_user_and_target(user.id, CodeTargetEnum.PASSWORD_RESET)
+        if check_code is not None:
+            if datetime.datetime.now().timestamp() - check_code.datetime.timestamp() > 60:
+                await UserCode.delete(check_code.id)
+                reset_code = generate_code()
+                password_reset.apply_async((request_model.email, reset_code))
+                await UserCode.create(user_id=user.id,
+                                      code=reset_code,
+                                      target=CodeTargetEnum.PASSWORD_RESET)
+                return {'message': 'Reset code was sent on specified email'}
+            else:
+                return {'message': 'You can request a reset code only one time per minute'}
         reset_code = generate_code()
         password_reset.apply_async((request_model.email, reset_code))
         await UserCode.create(user_id=user.id,

@@ -4,7 +4,7 @@ from jinja2 import Environment, PackageLoader, select_autoescape
 
 env = Environment(
     loader=PackageLoader('app', 'email_templates'),
-    autoescape=select_autoescape(['html'])
+    autoescape=select_autoescape(['html', 'xml'])
 )
 
 conf = ConnectionConfig(
