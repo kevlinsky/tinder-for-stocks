@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from db import init_db
+from .db import init_db
 
 app = FastAPI()
 
