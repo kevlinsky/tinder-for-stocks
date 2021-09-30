@@ -1,11 +1,9 @@
-from sqlalchemy import String, Integer, Boolean, Numeric, select
+from sqlalchemy import String, Integer, Boolean, Numeric, select, Enum, DateTime
 from sqlalchemy.sql.schema import Column, ForeignKey
+import enum
+import datetime
 
 from app.db import Base, async_db_session, ModelAdmin
-
-
-def count_iterable(i):
-    return sum(1 for e in i)
 
 
 class User(Base, ModelAdmin):
@@ -52,3 +50,27 @@ class UserScreener(Base, ModelAdmin):
     id = Column(Integer, primary_key=True, index=True, unique=True, autoincrement=True, nullable=False)
     user_id = Column(Integer, ForeignKey('users.id', ondelete='CASCADE'), nullable=False)
     screener_id = Column(Integer, ForeignKey('screeners.id', ondelete='CASCADE'), nullable=False)
+
+
+class CodeTargetEnum(enum.Enum):
+    EMAIL_VERIFICATION = 'email_verification'
+    PASSWORD_RESET = 'password_reset'
+
+
+class UserCode(Base, ModelAdmin):
+    __tablename__ = 'users_codes'
+
+    id = Column(Integer, primary_key=True, index=True, unique=True, autoincrement=True, nullable=False)
+    user_id = Column(Integer, ForeignKey('users.id', ondelete='CASCADE'), nullable=False)
+    code = Column(Integer, nullable=False)
+    target = Column(Enum(CodeTargetEnum))
+    datetime = Column(DateTime, default=datetime.datetime.now())
+
+    @classmethod
+    async def get_by_user_and_target(cls, user_id, target):
+        query = select(cls).where(cls.user_id == user_id, cls.target == target)
+        results = (await async_db_session.execute(query)).scalars().all()
+        result = None
+        if len(results) > 0:
+            result = results[0]
+        return result

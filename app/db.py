@@ -1,17 +1,18 @@
 from sqlalchemy.future import select
+from sqlalchemy import delete
 from sqlalchemy import update as sqlalchemy_update
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 import os
 
-host = os.environ.get('DB_HOST')
-name = os.environ.get('DB_NAME')
-port = os.environ.get('DB_PORT')
-user = os.environ.get('DB_USER')
-password = os.environ.get('DB_USER_PASSWORD')
+host = os.getenv('POSTGRES_HOST')
+db = os.getenv('POSTGRES_DB')
+port = os.getenv('POSTGRES_PORT')
+user = os.getenv('POSTGRES_USER')
+password = os.getenv('POSTGRES_PASSWORD')
 
-SQLALCHEMY_DATABASE_URL = f'postgresql+asyncpg://{user}:{password}@{host}:{port}/{name}'
+SQLALCHEMY_DATABASE_URL = f'postgresql+asyncpg://{user}:{password}@{host}:{port}/{db}'
 
 Base = declarative_base()
 
@@ -65,8 +66,14 @@ class ModelAdmin:
             result = results[0]
         return result
 
+    @classmethod
+    async def delete(cls, id):
+        query = delete(cls).where(cls.id == id)
+        await async_db_session.execute(query)
+        await async_db_session.commit()
+
 
 # Imports for alembic autogenerate function
-from user.models import User, UserScreener, UserStockNotifier, UserFavoriteStock
+from user.models import User, UserScreener, UserStockNotifier, UserFavoriteStock, UserCode, CodeTargetEnum
 from stock.models import Stock
 from screener.models import Screener

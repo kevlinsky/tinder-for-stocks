@@ -1,0 +1,13 @@
+FROM python:3.9
+
+RUN apt-get install && apt update && apt install vim -y
+
+ENV PYTHONUNBUFFERED=1
+WORKDIR /usr/src/
+RUN pip install pipenv
+COPY Pipfile Pipfile.lock ./
+RUN pipenv install --ignore-pipfile --system --deploy
+
+COPY . ./
+
+CMD python wait-postgres.py && alembic upgrade head && uvicorn app.main:app --host 0.0.0.0 --port 8000
