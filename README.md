@@ -16,13 +16,19 @@ docker-compose up
 * Add the environment variables in ```File/Settings/Tools/Terminal``` if you're using PyCharm
 * **Or** add it in ```~/.bashrc```
 
-2. Run migrations:
+2. Install dependencies (if you doesn't have pipenv, install it: ```pip install pipenv```):
+```
+pipenv shell
+pipenv install 
+```
+
+3. Run migrations:
 ```
 alembic upgrate head
 ```
 
-3. Run FastAPI
+4. Run FastAPI
 ```
 uvicorn app.main:app
 ```
-4. Open the **http://127.0.0.1:8000**
+5. Open the **http://127.0.0.1:8000**
