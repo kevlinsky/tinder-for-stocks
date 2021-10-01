@@ -5,7 +5,8 @@
 ```
 cp .env.example .env
 ```
-**NOTE: Redis should be disabled locally: ```sudo systemctl stop redis```**
+**NOTE: Redis should be disabled locally:** ```sudo systemctl stop redis```
+
 2. Run it with command:
 ```
 docker-compose up
