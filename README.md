@@ -22,25 +22,25 @@ pipenv shell
 pipenv install 
 ```
 
-3. Migrations:
+3. Make migrations:
 ```
 alembic revision --autogenerate -m "Migration"
 alembic upgrade head
 ```
 
-4. Run FastAPI
-```
-uvicorn app.main:app
-```
-
-5. Message Broker
+4. Start message broker
 ```
 redis-server
 ```
 
-6. Celery
+5. Run Celery worker
 ```
 celery -A app.worker.celery worker -l INFO --without-gossip --without-mingle --without-heartbeat -Ofair --pool=solo
+```
+
+6. Run FastAPI
+```
+uvicorn app.main:app
 ```
 
 7. Open the **http://127.0.0.1:8000**

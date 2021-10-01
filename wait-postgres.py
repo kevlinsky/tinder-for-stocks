@@ -11,7 +11,7 @@ async def run():
             conn = await asyncpg.connect(user=getenv("POSTGRES_USER"), password=getenv("POSTGRES_PASSWORD"),
                                          database=getenv("POSTGRES_DB"), host=getenv("POSTGRES_HOST"))
             conn_status = True
-        except asyncpg.exceptions.PostgresError:
+        except (asyncpg.exceptions.PostgresError, ConnectionRefusedError):
             sleep(1)
             continue
 
