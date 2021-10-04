@@ -10,4 +10,7 @@ RUN pipenv install --ignore-pipfile --system --deploy
 
 COPY . ./
 
-CMD python wait-postgres.py && alembic upgrade head && uvicorn app.main:app --host 0.0.0.0 --port 8000
+CMD python wait-postgres.py && \
+    alembic upgrade head && \
+    celery -A app.worker.celery worker -l INFO --without-gossip --without-mingle --without-heartbeat -Ofair --pool=solo & \
+    uvicorn app.main:app --host 0.0.0.0 --port 8000

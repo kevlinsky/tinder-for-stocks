@@ -67,7 +67,7 @@ async def signup_email_confirm(details: EmailConfirmationModel):
             return {'message': f'Email {details.email} successfully confirmed'}
 
 
-@app.post('/token')
+@app.post('/login')
 async def login(user_details: AuthModel):
     user = await User.get_by_email(user_details.email)
     if user is None:
@@ -85,8 +85,8 @@ async def login(user_details: AuthModel):
 
 @app.post('/token/refresh')
 async def refresh_token(refresh_model: RefreshTokenModel):
-    refresh_token = refresh_model.refresh_token
-    new_token = auth_handler.refresh_token(refresh_token)
+    refresh_token_ = refresh_model.refresh_token
+    new_token = auth_handler.refresh_token(refresh_token_)
     return {'access_token': new_token}
 
 

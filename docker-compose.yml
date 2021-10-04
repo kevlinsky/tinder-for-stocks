@@ -18,3 +18,8 @@ services:
       - "8000:8000"
     depends_on:
       - db
+  redis:
+    image: redis
+    restart: on-failure
+    ports:
+      - "6379:6379"
