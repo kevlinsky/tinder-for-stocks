@@ -18,7 +18,7 @@ auth_handler = Auth()
 access_logger = logging.getLogger('uvicorn.access')
 error_logger = logging.getLogger('uvicorn.error')
 access_handler = logging.FileHandler(filename='./logs/access_uvicorn.log', mode='a')
-error_handler = logging.FileHandler(filename='./logs/errors.log', mode='a')
+error_handler = logging.FileHandler(filename='./logs/error_uvicorn.log', mode='a')
 
 
 @app.on_event('startup')
