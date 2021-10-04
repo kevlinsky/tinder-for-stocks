@@ -1,5 +1,6 @@
-from random import sample
+import logging
 import datetime
+from random import sample
 
 from fastapi import FastAPI, Security, HTTPException
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
@@ -13,6 +14,30 @@ from .db import User, UserCode, CodeTargetEnum
 app = FastAPI()
 security = HTTPBearer()
 auth_handler = Auth()
+
+access_logger = logging.getLogger('uvicorn.access')
+error_logger = logging.getLogger('uvicorn.error')
+access_handler = logging.FileHandler(filename='./logs/access_uvicorn.log', mode='a')
+error_handler = logging.FileHandler(filename='./logs/errors.log', mode='a')
+
+
+@app.on_event('startup')
+async def startup_event():
+    error_logger.setLevel('WARNING')
+
+    access_handler.setFormatter(
+        logging.Formatter("%(levelname)s: [%(asctime)s] - %(message)s", datefmt="%Y-%m-%d %H:%M:%S"))
+    error_handler.setFormatter(
+        logging.Formatter("%(levelname)s: [%(asctime)s] - %(message)s", datefmt="%Y-%m-%d %H:%M:%S"))
+
+    access_logger.addHandler(access_handler)
+    error_logger.addHandler(error_handler)
+
+
+@app.on_event('shutdown')
+async def shutdown_event():
+    access_handler.close()
+    error_handler.close()
 
 
 @app.get('/')
@@ -45,7 +70,7 @@ async def signup(user_details: SignUpModel):
                               target=CodeTargetEnum.EMAIL_VERIFICATION)
         return {'id': id, 'message': 'Verification code was sent to the specified email'}
     except Exception as e:
-        print(e)
+        error_logger.error(e, exc_info=True)
         error_msg = 'Failed to signup user'
         return {'error': error_msg}
 
