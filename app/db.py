@@ -6,13 +6,13 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 import os
 
-host = os.environ.get('DB_HOST')
-name = os.environ.get('DB_NAME')
-port = os.environ.get('DB_PORT')
-user = os.environ.get('DB_USER')
-password = os.environ.get('DB_USER_PASSWORD')
+host = os.getenv('POSTGRES_HOST')
+db = os.getenv('POSTGRES_DB')
+port = os.getenv('POSTGRES_PORT')
+user = os.getenv('POSTGRES_USER')
+password = os.getenv('POSTGRES_PASSWORD')
 
-SQLALCHEMY_DATABASE_URL = f'postgresql+asyncpg://{user}:{password}@{host}:{port}/{name}'
+SQLALCHEMY_DATABASE_URL = f'postgresql+asyncpg://{user}:{password}@{host}:{port}/{db}'
 
 Base = declarative_base()
 
