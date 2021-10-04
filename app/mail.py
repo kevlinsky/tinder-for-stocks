@@ -21,13 +21,13 @@ conf = ConnectionConfig(
 )
 
 
-async def send_confirmation_email(email_to: str, code: int):
+async def send_confirmation_email(email_to: str, hash: str):
     template = env.get_template('confirm_email.html')
 
     message = MessageSchema(
         subject='Email Confirmation',
         recipients=[email_to],
-        body=template.render(code=code),
+        html=template.render(hash=hash),
         subtype='html',
     )
 
@@ -41,7 +41,7 @@ async def send_password_reset_email(email_to: str, code: int):
     message = MessageSchema(
         subject='Password Reset',
         recipients=[email_to],
-        body=template.render(code=code),
+        html=template.render(code=code),
         subtype='html',
     )
 

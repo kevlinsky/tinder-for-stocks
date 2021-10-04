@@ -16,6 +16,7 @@ pyjwt = "*"
 fastapi-mail = "*"
 jinja2 = "*"
 celery = "*"
+redis = "*"
 
 [dev-packages]
 
