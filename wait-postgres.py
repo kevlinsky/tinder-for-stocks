@@ -1,6 +1,6 @@
 import asyncio
 import asyncpg
-from os import getenv
+import os
 from time import sleep
 
 
@@ -8,8 +8,11 @@ async def run():
     conn_status = False
     while not conn_status:
         try:
-            conn = await asyncpg.connect(user=getenv("POSTGRES_USER"), password=getenv("POSTGRES_PASSWORD"),
-                                         database=getenv("POSTGRES_DB"), host=getenv("POSTGRES_HOST"))
+            conn = await asyncpg.connect(user=os.environ.get("POSTGRES_USER"),
+                                         password=os.environ.get("POSTGRES_PASSWORD"),
+                                         database=os.environ.get("POSTGRES_DB"),
+                                         host=os.environ.get("POSTGRES_HOST"),
+                                         port=os.environ.get("POSTGRES_PORT"))
             conn_status = True
         except (asyncpg.exceptions.PostgresError, ConnectionRefusedError):
             sleep(1)

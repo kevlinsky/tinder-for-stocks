@@ -3,8 +3,8 @@ import secrets
 import os
 
 client = redis.StrictRedis(
-    host=os.environ.get('CELERY_BROKER_HOST'),
-    port=os.environ.get('CELERY_BROKER_PORT'),
+    host=os.environ.get('REDIS_HOST'),
+    port=os.environ.get('REDIS_PORT'),
     db=2,
     charset="utf-8",
     decode_responses=True

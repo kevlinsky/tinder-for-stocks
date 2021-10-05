@@ -10,14 +10,14 @@ env = Environment(
 conf = ConnectionConfig(
     MAIL_USERNAME=os.environ.get('MAIL_USERNAME'),
     MAIL_PASSWORD=os.environ.get('MAIL_PASSWORD'),
-    MAIL_FROM='tinder-for-stocks@gmail.com',
+    MAIL_FROM='stocks.tinder2021@gmail.com',
     MAIL_PORT=587,
     MAIL_SERVER='smtp.gmail.com',
     MAIL_FROM_NAME='Tinder For Stocks Helper',
     MAIL_TLS=True,
     MAIL_SSL=False,
     USE_CREDENTIALS=True,
-    VALIDATE_CERTS=True
+    VALIDATE_CERTS=False
 )
 
 
