@@ -16,6 +16,10 @@ pyjwt = "*"
 fastapi-mail = "*"
 jinja2 = "*"
 celery = "*"
+pytest = "*"
+psycopg2 = "*"
+requests = "*"
+aiopg = "*"
 
 [dev-packages]
 

@@ -23,3 +23,12 @@ services:
     restart: on-failure
     ports:
       - "6379:6379"
+  test:
+    build:
+      context: ./
+      dockerfile: ./test/Dockerfile
+    env_file:
+      - .env
+    depends_on:
+      - db
+      - web
