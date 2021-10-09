@@ -64,3 +64,27 @@ class Auth:
             raise HTTPException(status_code=401, detail='Refresh token expired')
         except jwt.InvalidTokenError:
             raise HTTPException(status_code=401, detail='Invalid refresh token')
+
+    def encode_confirm_token(self, email):
+        payload = {
+            'exp': datetime.utcnow() + timedelta(days=7),
+            'iat': datetime.utcnow(),
+            'scope': 'confirm_token',
+            'sub': email
+        }
+        return jwt.encode(
+            payload,
+            self.secret,
+            algorithm='HS256'
+        )
+
+    def decode_confirm_token(self, token):
+        try:
+            payload = jwt.decode(token, self.secret, algorithms=['HS256'])
+            if payload['scope'] == 'confirm_token':
+                return payload['sub']
+            raise HTTPException(status_code=401, detail='Scope for the token is invalid')
+        except jwt.ExpiredSignatureError:
+            raise HTTPException(status_code=401, detail='Token expired')
+        except jwt.InvalidTokenError:
+            raise HTTPException(status_code=401, detail='Invalid token')

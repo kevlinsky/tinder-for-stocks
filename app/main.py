@@ -38,33 +38,21 @@ async def signup(user_details: SignUpModel):
                                password=hashed_password,
                                first_name=user_details.first_name,
                                last_name=user_details.last_name)
-        confirmation_code = generate_code()
-        confirmation_email.apply_async((user_details.email, confirmation_code))
-        await UserCode.create(user_id=id,
-                              code=confirmation_code,
-                              target=CodeTargetEnum.EMAIL_VERIFICATION)
-        return {'id': id, 'message': 'Verification code was sent to the specified email'}
+        hash = auth_handler.encode_confirm_token(user_details.email)
+        confirmation_email.apply_async((user_details.email, hash))
+        return {'id': id, 'message': 'Link for email verification was sent to specified email address'}
     except Exception as e:
         print(e)
         error_msg = 'Failed to signup user'
         return {'error': error_msg}
 
 
-@app.post('/signup/email-confirm')
-async def signup_email_confirm(details: EmailConfirmationModel):
-    user = await User.get_by_email(details.email)
-    if user is None:
-        error_msg = 'User not found'
-        return {'error': error_msg}
-    else:
-        user_code = await UserCode.get_by_user_and_target(user.id, CodeTargetEnum.EMAIL_VERIFICATION)
-        if user_code.code != details.code:
-            error_msg = 'Wrong code for specified user'
-            return {'error': error_msg}
-        else:
-            await User.update(user.id, is_active=True)
-            await UserCode.delete(user_code.id)
-            return {'message': f'Email {details.email} successfully confirmed'}
+@app.get('/email-confirm/{hash}')
+async def email_confirm(hash: str):
+    user_email = auth_handler.decode_confirm_token(hash)
+    user = await User.get_by_email(user_email)
+    await User.update(user.id, is_active=True)
+    return {'message': f'Email {user_email} successfully confirmed'}
 
 
 @app.post('/login')

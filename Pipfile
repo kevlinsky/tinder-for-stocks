@@ -16,6 +16,9 @@ pyjwt = "*"
 fastapi-mail = "*"
 jinja2 = "*"
 celery = "*"
+redis = "*"
+finnhub-python = "*"
+tinvest = "*"
 
 [dev-packages]
 
