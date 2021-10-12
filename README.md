@@ -15,7 +15,7 @@ cp .env.example .env
 ```
 docker-compose up
 ```
-2. Open the **http://0.0.0.0:8000**
+3. Open the **http://0.0.0.0:8000**
 
 ### How to launch without Docker?
 1. Environment variables:
