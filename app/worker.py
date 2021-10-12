@@ -10,8 +10,8 @@ celery.conf.result_backend = os.environ.get('CELERY_RESULT_BACKEND')
 
 
 @celery.task(name='confirmation_email')
-def confirmation_email(email_to: str, code: int):
-    asyncio.get_event_loop().run_until_complete(send_confirmation_email(email_to, code))
+def confirmation_email(email_to: str, hash: str):
+    asyncio.get_event_loop().run_until_complete(send_confirmation_email(email_to, hash))
     return {'message': f'Confirmation email to {email_to} has been sent'}
 
 

@@ -20,6 +20,9 @@ pytest = "*"
 psycopg2 = "*"
 requests = "*"
 aiopg = "*"
+redis = "*"
+finnhub-python = "*"
+tinvest = "*"
 
 [dev-packages]
 

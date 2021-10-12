@@ -10,24 +10,24 @@ env = Environment(
 conf = ConnectionConfig(
     MAIL_USERNAME=os.environ.get('MAIL_USERNAME'),
     MAIL_PASSWORD=os.environ.get('MAIL_PASSWORD'),
-    MAIL_FROM='tinder-for-stocks@gmail.com',
+    MAIL_FROM='stocks.tinder2021@gmail.com',
     MAIL_PORT=587,
     MAIL_SERVER='smtp.gmail.com',
     MAIL_FROM_NAME='Tinder For Stocks Helper',
     MAIL_TLS=True,
     MAIL_SSL=False,
     USE_CREDENTIALS=True,
-    VALIDATE_CERTS=True
+    VALIDATE_CERTS=False
 )
 
 
-async def send_confirmation_email(email_to: str, code: int):
+async def send_confirmation_email(email_to: str, hash: str):
     template = env.get_template('confirm_email.html')
 
     message = MessageSchema(
         subject='Email Confirmation',
         recipients=[email_to],
-        body=template.render(code=code),
+        html=template.render(hash=hash),
         subtype='html',
     )
 
@@ -41,7 +41,7 @@ async def send_password_reset_email(email_to: str, code: int):
     message = MessageSchema(
         subject='Password Reset',
         recipients=[email_to],
-        body=template.render(code=code),
+        html=template.render(code=code),
         subtype='html',
     )
 

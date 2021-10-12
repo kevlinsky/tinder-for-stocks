@@ -1,4 +1,4 @@
-from sqlalchemy import String, Integer, Boolean, Numeric, select, Enum, DateTime
+from sqlalchemy import String, Integer, Boolean, Numeric, select, Enum, DateTime, Date
 from sqlalchemy.sql.schema import Column, ForeignKey
 import enum
 import datetime
@@ -16,6 +16,7 @@ class User(Base, ModelAdmin):
     password = Column(String(255), nullable=False)
     is_active = Column(Boolean, default=False)
     updates_subscribed = Column(Boolean, default=False)
+    date_joined = Column(Date, default=datetime.datetime.now())
 
     @classmethod
     async def get_by_email(cls, email):
