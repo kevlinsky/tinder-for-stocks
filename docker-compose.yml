@@ -12,6 +12,8 @@ services:
       context: ./
       dockerfile: ./app/Dockerfile
     restart: on-failure
+    volumes:
+      - ./logs:/usr/src/logs/
     env_file:
       - .env
     ports:
@@ -21,5 +23,3 @@ services:
   redis:
     image: redis
     restart: on-failure
-    ports:
-      - "6379:6379"
