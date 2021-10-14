@@ -9,7 +9,7 @@ def test_index():
     assert response.json() == {"hello": "world"}
 
 
-user_test_data = {'email': 'sensitizers@gemuk.buzz', 'password': 'pass23', 'first_name': 'Gunaz',
+user_test_data = {'email': 'sensitizers@vicceo.com', 'password': 'pass23', 'first_name': 'Gunaz',
                   'last_name': 'Amirkhanova'}
 
 
@@ -39,7 +39,8 @@ async def get_existed_user_data():
 def test_signup():
     response = post('http://web:8000/signup', json=user_test_data)
     assert response.status_code == 200
-    assert response.json() == {"id": asyncio.run(get_user_id()), "message": "Verification code was sent to the specified email"}
+    assert response.json() == {"id": asyncio.run(get_user_id()),
+                               'message': 'Link for email verification was sent to specified email address'}
 
 
 def test_signup_already_exists():

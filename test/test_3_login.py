@@ -3,7 +3,7 @@ from app.main import auth_handler
 from .test_1_user_signup import user_test_data
 
 
-user_test_data_not_verified = {'email': 'stttfhyfgterty@neaeo.com', 'password': 'pass23', 'first_name': 'Gunaz',
+user_test_data_not_verified = {'email': 'stttfeerkty7@neaeo.com', 'password': 'pass23', 'first_name': 'Gunaz',
                                'last_name': 'Amirkhanova'}
 
 
