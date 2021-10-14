@@ -1,33 +1,32 @@
 import asyncio
 import json
-from time import sleep
-from os import getenv
-
 import tinvest
-import finnhub
 
-TINVEST_TOKEN = getenv("TINVEST_TOKEN", "t.3YhllsOcci5Vtv-Jb8zTEvHCENfOL73TUXhYuwcjEf76htUdaHA13E_2RHKleJYHJK7VqO2Dhcqmq1W2Nsniew")
-FINNHUB_TOKEN = getenv("FINNHUB_TOKEN", "c4tj8hqad3iertukhj80")
+from random import randint
+from time import sleep
+from os import environ
+from typing import List, Dict
+
+TINVEST_TOKEN = environ.get("TINVEST_TOKEN")
+FINNHUB_TOKEN = environ.get("FINNHUB_TOKEN")
+ALPHAVANTAGE_TOKEN = environ.get("ALPHAVANTAGE_TOKEN")
 
 
-async def main():
+async def get_stocks_data():
     client = tinvest.AsyncClient(TINVEST_TOKEN)
     response = await client.get_market_stocks()
-    d = json.loads(response.json())["payload"]["instruments"]
+    response_instruments: List[Dict] = json.loads(response.json())["payload"]["instruments"]
 
-    i = 0
-
-    stocks_list = []
-    for key in d:
-        if i == 100:
+    ticker_figi_list: List[List[str, str]] = []
+    cnt = 0
+    for instrument in response_instruments:
+        if cnt == 30:
             break
-        if key["currency"] == "USD":
-            stocks_list.append(key["ticker"])
-            i += 1
+        num = randint(0, 1800)
+        if instrument[num]["currency"] == "USD":
+            ticker_figi_list.append([instrument["ticker"], instrument["figi"]])
+            cnt += 1
 
-    finnhub_client = finnhub.Client(api_key=FINNHUB_TOKEN)
-
-    res = finnhub_client.company_basic_financials(stocks_list[0], 'all')["metric"]
 
     """
     market_link = generate link from tinkoff
@@ -49,15 +48,3 @@ async def main():
     figi = from tinvest
     """
     await client.close()
-
-
-def mem():
-    try:
-        a = 1 / 0
-    except ZeroDivisionError as ex:
-        print("нельзя")
-        return ex
-    return a
-
-
-print(mem())
