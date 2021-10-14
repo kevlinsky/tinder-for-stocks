@@ -6,7 +6,7 @@ from fastapi import FastAPI, Security, HTTPException
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 
 from .worker import confirmation_email, password_reset
-from user.schemas import (AuthModel, SignUpModel, RefreshTokenModel, PasswordResetRequestModel, EmailConfirmationModel,
+from user.schemas import (AuthModel, SignUpModel, RefreshTokenModel, PasswordResetRequestModel,
                           PasswordResetModel)
 from user.auth import Auth
 from .db import User, UserCode, CodeTargetEnum

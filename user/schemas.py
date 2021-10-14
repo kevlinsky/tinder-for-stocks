@@ -45,8 +45,3 @@ class PasswordResetModel(BaseModel):
             return value
         else:
             raise ValueError('Password length must be between 6 and 20 characters')
-
-
-class EmailConfirmationModel(BaseModel):
-    email: str
-    code: int

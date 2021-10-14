@@ -2,7 +2,7 @@ import logging
 import urllib.request
 import urllib.error
 import json
-from typing import List, Dict, Tuple
+from typing import List, Dict, Tuple, Union
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from time import sleep
 
@@ -23,7 +23,7 @@ class Crawler:
     __logger.addHandler(__access_handler)
     __logger.addHandler(__error_handler)
 
-    def __init__(self, token_alpha: str, token_finnhub: str, stocks: List[List[str, str]], request_limit=5):
+    def __init__(self, token_alpha: str, token_finnhub: str, stocks: List[List[Union[str, str]]], request_limit=5):
         self.token_alpha: str = token_alpha
         self.token_finnhub: str = token_finnhub
         self.stocks: List[List[str, str]] = stocks

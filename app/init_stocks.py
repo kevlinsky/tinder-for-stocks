@@ -6,8 +6,8 @@ from random import randint
 from os import environ
 from typing import List, Dict
 
-from .crawler import Crawler
-from .db import Stock
+from stock.models import Stock
+from crawler import Crawler
 
 TINVEST_TOKEN = environ.get("TINVEST_TOKEN")
 FINNHUB_TOKEN = environ.get("FINNHUB_TOKEN")
@@ -22,7 +22,7 @@ async def get_stocks_data():
     ticker_figi_list: List[List[str, str]] = []
     cnt = 0
     for instrument in response_instruments:
-        if cnt == 30:
+        if cnt == 5:
             break
         num = randint(0, 1800)
         if instrument[num]["currency"] == "USD":
@@ -62,4 +62,5 @@ async def get_stocks_data():
     await client.close()
 
 
-asyncio.run(get_stocks_data())
+if __name__ == '__main__':
+    asyncio.run(get_stocks_data())
