@@ -12,6 +12,8 @@ services:
       context: ./
       dockerfile: ./app/Dockerfile
     restart: on-failure
+    volumes:
+      - ./logs:/usr/src/logs/
     env_file:
       - .env
     ports:

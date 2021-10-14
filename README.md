@@ -1,12 +1,16 @@
 # Tinder for stocks
 
+## Common preparations
+1. Create the logs dir and log files locally:
+```
+mkdir logs && touch access_uvicorn.log error_uvicorn.log celery.log 
+```
+
 ### How to launch with Docker?
 1. Rename the ```.env.example``` file to ```.env```
 ```
 cp .env.example .env
 ```
-**NOTE: Redis should be disabled locally:** ```sudo systemctl stop redis```
-
 2. Run it with command:
 ```
 docker-compose up
