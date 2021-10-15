@@ -1,8 +1,9 @@
 import asyncio
 import aiopg
 from requests import post
-from .test_1_user_signup import user_test_data
+from test.test_1_user_signup import user_test_data
 import time
+import os
 
 email_not_found = "notfound@gmail.com"
 
@@ -23,7 +24,9 @@ time.sleep(60)
 
 
 async def get_reset_code():
-    conn = await aiopg.connect(database="tinder", host="db", user="tinder", password="tinder", port=5432)
+    conn = await aiopg.connect(database=os.getenv('POSTGRES_DB'), host=os.getenv('POSTGRES_HOST'),
+                               user=os.getenv('POSTGRES_USER'), password=os.getenv('POSTGRES_PASSWORD'),
+                               port=os.getenv('POSTGRES_PORT'))
     cursor = await conn.cursor()
     await cursor.execute('SELECT * FROM users_codes WHERE id=(SELECT max(id) FROM users_codes) ')
     reset_code = await cursor.fetchone()

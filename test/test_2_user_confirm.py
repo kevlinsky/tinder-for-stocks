@@ -1,6 +1,6 @@
-from requests import post, get
+from requests import get
 from app.main import auth_handler
-from .test_1_user_signup import user_test_data
+from test.test_1_user_signup import user_test_data
 
 
 def test_confirm_email():

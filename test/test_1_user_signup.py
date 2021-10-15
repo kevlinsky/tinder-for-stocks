@@ -1,6 +1,7 @@
 import aiopg
 import asyncio
 from requests import get, post
+import os
 
 
 def test_index():
@@ -14,7 +15,9 @@ user_test_data = {'email': 'sensitizers@vicceo.com', 'password': 'pass23', 'firs
 
 
 async def get_user_id():
-    conn = await aiopg.connect(database="tinder", host="db", user="tinder", password="tinder", port=5432)
+    conn = await aiopg.connect(database=os.getenv('POSTGRES_DB'), host=os.getenv('POSTGRES_HOST'),
+                               user=os.getenv('POSTGRES_USER'), password=os.getenv('POSTGRES_PASSWORD'),
+                               port=os.getenv('POSTGRES_PORT'))
     cursor = await conn.cursor()
     await cursor.execute('SELECT max(id) FROM users')
     max_id_tuple = await cursor.fetchone()
@@ -27,7 +30,9 @@ async def get_user_id():
 
 
 async def get_existed_user_data():
-    conn = await aiopg.connect(database="tinder", host="db", user="tinder", password="tinder", port=5432)
+    conn = await aiopg.connect(database=os.getenv('POSTGRES_DB'), host=os.getenv('POSTGRES_HOST'),
+                               user=os.getenv('POSTGRES_USER'), password=os.getenv('POSTGRES_PASSWORD'),
+                               port=os.getenv('POSTGRES_PORT'))
     cursor = await conn.cursor()
     await cursor.execute('SELECT * FROM users')
     user_exists = await cursor.fetchone()
