@@ -40,9 +40,11 @@ class Crawler:
         except (urllib.error.URLError, urllib.error.HTTPError, Exception) as exc:
             Crawler.__logger.error(exc, exc_info=True)
             return {"Symbol": ticker, "ERROR": "CHECK LOGS"}, {"Symbol": ticker, "ERROR": "CHECK LOGS"}
-        response_json_alpha = response_alpha.read().decode('utf-8')
-        response_json_finnhub = response_finnhub.read().decode('utf-8')
-        return json.loads(response_json_alpha), json.loads(response_json_finnhub)
+        response_json_alpha = json.loads(response_alpha.read().decode('utf-8'))
+        response_json_finnhub = json.loads(response_finnhub.read().decode('utf-8'))["metric"]
+        if not response_json_finnhub or not response_json_alpha:
+            return {}, {}
+        return response_json_alpha, response_json_finnhub
 
     def run(self):
         limit_list_stocks: List[str] = []
@@ -57,13 +59,15 @@ class Crawler:
                 futures = {executor.submit(self.handling_urls, ticker): ticker for ticker in limit_list_stocks}
 
                 for future in as_completed(futures):
-                    response_json_alpha = future.result()
-                    response_json_finnhub = future.result()
+                    response_json_alpha, response_json_finnhub = future.result()
+                    if not response_json_alpha or not response_json_finnhub:
+                        continue
                     self.results.append([response_json_alpha, response_json_finnhub])
 
             count_stocks = 0
             limit_list_stocks.clear()
-            sleep(60.5)
+            if self.stocks:
+                sleep(60.5)
 
     def get_result(self) -> List[List[Dict]]:
         return self.results

@@ -23,4 +23,4 @@ class Stock(Base, ModelAdmin):
     debt = Column(Numeric, nullable=False)
     expenses = Column(Numeric, nullable=False)
     price = Column(Numeric, nullable=False)
-    figi = Column(Numeric, nullable=False)
+    figi = Column(String(255), nullable=False)
