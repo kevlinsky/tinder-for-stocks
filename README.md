@@ -3,7 +3,7 @@
 ## Common preparations
 1. Create the logs dir and log files locally:
 ```
-mkdir logs && touch access_uvicorn.log error_uvicorn.log celery.log 
+mkdir logs && cd logs && touch access_uvicorn.log error_uvicorn.log celery.log access_api.log error_api.log 
 ```
 
 ### How to launch with Docker?
