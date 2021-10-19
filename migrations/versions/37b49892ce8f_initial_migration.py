@@ -36,7 +36,7 @@ def upgrade():
     sa.Column('debt', sa.Numeric(), nullable=False),
     sa.Column('expenses', sa.Numeric(), nullable=False),
     sa.Column('price', sa.Numeric(), nullable=False),
-    sa.Column('figi', sa.Numeric(), nullable=False),
+    sa.Column('figi', sa.String(255), nullable=False),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_index(op.f('ix_stocks_id'), 'stocks', ['id'], unique=True)
