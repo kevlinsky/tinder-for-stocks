@@ -21,6 +21,5 @@ class Stock(Base, ModelAdmin):
     beta = Column(Numeric, nullable=False)
     revenue = Column(Numeric, nullable=False)
     debt = Column(Numeric, nullable=False)
-    expenses = Column(Numeric, nullable=False)
     price = Column(Numeric, nullable=False)
     figi = Column(String(255), nullable=False)

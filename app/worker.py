@@ -7,12 +7,14 @@ from celery.utils.log import get_task_logger
 
 from .mail import send_confirmation_email, send_password_reset_email
 
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
 celery = Celery(__name__)
 celery.conf.broker_url = os.environ.get('CELERY_BROKER_URL')
 celery.conf.result_backend = os.environ.get('CELERY_RESULT_BACKEND')
 
 logger = get_task_logger(__name__)
-logger_handler = logging.FileHandler('./logs/celery.log')
+logger_handler = logging.FileHandler(os.path.join(BASE_DIR, 'logs/celery.log'))
 logger_handler.setFormatter(
     logging.Formatter("%(levelname)s: [%(asctime)s] - %(message)s", datefmt="%Y-%m-%d %H:%M:%S"))
 logger.addHandler(logger_handler)

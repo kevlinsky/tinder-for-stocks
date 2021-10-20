@@ -28,24 +28,32 @@ async def get_stocks_data(count_of_stocks: int = 5):
     await client.close()
 
     ticker_figi_list: List[List[str, str]] = []
-    for i in range(count_of_stocks):
+
+    while len(ticker_figi_list) < count_of_stocks:
         num = randint(0, 1000)
         instrument = response_instruments[num]
         if instrument["currency"] == "USD":
-            ticker_figi_list.append([instrument["ticker"], instrument["figi"]])
+            l = [instrument["ticker"], instrument["figi"]]
+            if l not in ticker_figi_list:
+                ticker_figi_list.append(l)
 
-    crawler = Crawler(ALPHAVANTAGE_TOKEN, FINNHUB_TOKEN, ticker_figi_list)
+    print('===================')
+    print(ticker_figi_list)
+    print('===================')
+
+    check_list = ticker_figi_list.copy()
+    crawler = Crawler(ALPHAVANTAGE_TOKEN, FINNHUB_TOKEN, check_list)
     crawler.run()
     crawler_results = crawler.get_result()
 
-    for alpha_result, finnhub_result in crawler_results:
+    for alpha_result, finnhub_result, price_result in crawler_results:
         if "ERROR" in alpha_result:
             continue
+
         figi = ''
-        for ticker, figi_ in ticker_figi_list:
-            if ticker == alpha_result["Symbol"]:
-                figi = str(figi_)
-                break
+        for item in ticker_figi_list:
+            if item[0] == alpha_result['Symbol']:
+                figi = item[1]
 
         await Stock.create(market_link=f'https://www.tinkoff.ru/invest/stocks/{alpha_result["Symbol"]}',
                            currency=alpha_result["Currency"],
@@ -61,10 +69,10 @@ async def get_stocks_data(count_of_stocks: int = 5):
                            beta=to_numeric(alpha_result.get("Beta", 0)),
                            revenue=to_numeric(finnhub_result.get("freeOperatingCashFlow/revenue5Y", 0)),
                            debt=to_numeric(finnhub_result.get("totalDebtCagr5Y", 0)),
-                           expenses=0,
-                           price=0,
+                           price=price_result['c'],
                            figi=figi)
 
 
 if __name__ == '__main__':
-    asyncio.run(get_stocks_data())
+    event_loop = asyncio.get_event_loop()
+    event_loop.run_until_complete(get_stocks_data(count_of_stocks=5))

@@ -22,6 +22,9 @@ aiopg = "*"
 redis = "*"
 finnhub-python = "*"
 tinvest = "*"
+implicit = "*"
+scipy = "*"
+schedule = "*"
 
 [dev-packages]
 

@@ -36,7 +36,8 @@ async def get_existed_user_data():
     cursor = await conn.cursor()
     await cursor.execute('SELECT * FROM users')
     user_exists = await cursor.fetchone()
-    user_exists_data = {'email': user_exists[3], 'password': 'password', 'first_name': user_exists[1], 'last_name': user_exists[2]}
+    user_exists_data = {'email': user_exists[3], 'password': 'password', 'first_name': user_exists[1],
+                        'last_name': user_exists[2]}
     await conn.close()
     return user_exists_data
 
@@ -55,7 +56,7 @@ def test_signup_already_exists():
 
 
 user_test_data_invalid_email = {'email': 'mrrrrrrrrrr', 'password': 'pass23', 'first_name': 'Gunaz',
-                  'last_name': 'Amirkhanova'}
+                                'last_name': 'Amirkhanova'}
 
 
 def test_signup_invalid_email():
@@ -63,8 +64,3 @@ def test_signup_invalid_email():
     assert response.status_code == 422
     assert response.json() == {'detail': [{'loc': ['body', 'email'], 'msg': 'value is not a valid email address',
                                            'type': 'value_error.email'}]}
-
-
-
-
-

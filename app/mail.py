@@ -47,3 +47,34 @@ async def send_password_reset_email(email_to: str, code: int):
 
     fm = FastMail(conf)
     await fm.send_message(message)
+
+
+async def send_weekly_digest(digest):
+    print(digest)
+    fm = FastMail(conf)
+    template = env.get_template('weekly_digest.html')
+
+    for pair in digest:
+        message = MessageSchema(
+            subject='Weekly digest',
+            recipients=[pair['user'].email],
+            html=template.render(first_name=pair['user'].first_name, stocks=pair['stocks']),
+            subtype='html',
+        )
+
+        await fm.send_message(message)
+
+
+async def send_monthly_digest(digest):
+    fm = FastMail(conf)
+    template = env.get_template('monthly_digest.html')
+
+    for pair in digest:
+        message = MessageSchema(
+            subject='Monthly digest',
+            recipients=[pair['user'].email],
+            html=template.render(first_name=pair['user'].first_name, stocks=pair['stocks']),
+            subtype='html',
+        )
+
+        await fm.send_message(message)

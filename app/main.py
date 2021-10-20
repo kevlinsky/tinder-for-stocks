@@ -1,10 +1,12 @@
 import logging
 import datetime
+import os
 from random import sample
 
 from fastapi import FastAPI, Security, HTTPException
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 
+from stock.recommender import Recommender
 from .worker import confirmation_email, password_reset
 from user.schemas import (AuthModel, SignUpModel, RefreshTokenModel, PasswordResetRequestModel,
                           PasswordResetModel)
@@ -14,11 +16,14 @@ from .db import User, UserCode, CodeTargetEnum
 app = FastAPI()
 security = HTTPBearer()
 auth_handler = Auth()
+recommender = Recommender()
+
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 access_logger = logging.getLogger('uvicorn.access')
 error_logger = logging.getLogger('uvicorn.error')
-access_handler = logging.FileHandler(filename='./logs/access_uvicorn.log', mode='a')
-error_handler = logging.FileHandler(filename='./logs/error_uvicorn.log', mode='a')
+access_handler = logging.FileHandler(filename=os.path.join(BASE_DIR, 'logs/access_uvicorn.log'), mode='a')
+error_handler = logging.FileHandler(filename=os.path.join(BASE_DIR, 'logs/error_uvicorn.log'), mode='a')
 
 
 @app.on_event('startup')
@@ -32,6 +37,7 @@ async def startup_event():
 
     access_logger.addHandler(access_handler)
     error_logger.addHandler(error_handler)
+    await recommender.fit()
 
 
 @app.on_event('shutdown')

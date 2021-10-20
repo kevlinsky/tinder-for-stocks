@@ -22,5 +22,4 @@ class Screener(Base, ModelAdmin):
     beta = Column(String(1000), nullable=False)
     revenue = Column(String(1000), nullable=False)
     debt = Column(String(1000), nullable=False)
-    expenses = Column(String(1000), nullable=False)
     price = Column(String(1000), nullable=False)
