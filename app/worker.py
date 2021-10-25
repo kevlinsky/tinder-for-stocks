@@ -11,7 +11,6 @@ from celery.utils.log import get_task_logger
 
 from app.mail import send_confirmation_email, send_password_reset_email
 from app.init_stocks import TINVEST_TOKEN
-from app.db import Stock
 
 celery = Celery(__name__)
 celery.conf.broker_url = os.environ.get('CELERY_BROKER_URL')
