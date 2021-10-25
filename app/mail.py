@@ -50,7 +50,6 @@ async def send_password_reset_email(email_to: str, code: int):
 
 
 async def send_weekly_digest(digest):
-    print(digest)
     fm = FastMail(conf)
     template = env.get_template('weekly_digest.html')
 

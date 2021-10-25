@@ -37,10 +37,6 @@ async def get_stocks_data(count_of_stocks: int = 5):
             if l not in ticker_figi_list:
                 ticker_figi_list.append(l)
 
-    print('===================')
-    print(ticker_figi_list)
-    print('===================')
-
     check_list = ticker_figi_list.copy()
     crawler = Crawler(ALPHAVANTAGE_TOKEN, FINNHUB_TOKEN, check_list)
     crawler.run()
@@ -51,9 +47,9 @@ async def get_stocks_data(count_of_stocks: int = 5):
             continue
 
         figi = ''
-        for item in ticker_figi_list:
-            if item[0] == alpha_result['Symbol']:
-                figi = item[1]
+        for ticker, figi_ in ticker_figi_list:
+            if ticker == alpha_result['Symbol']:
+                figi = figi_
 
         await Stock.create(market_link=f'https://www.tinkoff.ru/invest/stocks/{alpha_result["Symbol"]}',
                            currency=alpha_result["Currency"],
