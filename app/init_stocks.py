@@ -37,8 +37,7 @@ async def get_stocks_data(count_of_stocks: int = 5):
             if l not in ticker_figi_list:
                 ticker_figi_list.append(l)
 
-    check_list = ticker_figi_list.copy()
-    crawler = Crawler(ALPHAVANTAGE_TOKEN, FINNHUB_TOKEN, check_list)
+    crawler = Crawler(ALPHAVANTAGE_TOKEN, FINNHUB_TOKEN, ticker_figi_list)
     crawler.run()
     crawler_results = crawler.get_result()
 
@@ -65,7 +64,7 @@ async def get_stocks_data(count_of_stocks: int = 5):
                            beta=to_numeric(alpha_result.get("Beta", 0)),
                            revenue=to_numeric(finnhub_result.get("freeOperatingCashFlow/revenue5Y", 0)),
                            debt=to_numeric(finnhub_result.get("totalDebtCagr5Y", 0)),
-                           price=price_result['c'],
+                           price=to_numeric(price_result.get('c', 0)),
                            figi=figi)
 
 
