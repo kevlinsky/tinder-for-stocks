@@ -72,6 +72,12 @@ class ModelAdmin:
         await async_db_session.execute(query)
         await async_db_session.commit()
 
+    @classmethod
+    async def all(cls):
+        query = select(cls)
+        results = (await async_db_session.execute(query)).scalars().all()
+        return results
+
 
 # Imports for alembic autogenerate function
 from user.models import User, UserScreener, UserStockNotifier, UserFavoriteStock, UserCode, CodeTargetEnum

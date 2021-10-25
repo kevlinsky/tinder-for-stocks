@@ -26,7 +26,7 @@ class Crawler:
     def __init__(self, token_alpha: str, token_finnhub: str, stocks: List[List[Union[str, str]]], request_limit=5):
         self.token_alpha: str = token_alpha
         self.token_finnhub: str = token_finnhub
-        self.stocks: List[List[str, str]] = stocks
+        self.stocks: List[List[str, str]] = stocks.copy()
         self.request_limit: int = request_limit
         self.results: List[List[Dict]] = []
 
