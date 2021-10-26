@@ -22,8 +22,8 @@ class Recommender:
         )
 
     async def fit(self):
-        users_favs = await UserFavoriteStock.all()
-        if self.model is None and len(users_favs) > 0:
+        users_favs_count = await UserFavoriteStock.count()
+        if self.model is None and users_favs_count > 0:
             users = await User.all()
             rows = []
             for user in users:
