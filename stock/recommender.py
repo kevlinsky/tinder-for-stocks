@@ -22,16 +22,18 @@ class Recommender:
         )
 
     async def fit(self):
-        users = await User.all()
-        rows = []
-        for user in users:
-            row = await self.__make_user_row(user.id)
-            rows.append(row)
+        users_favs = await UserFavoriteStock.all()
+        if self.model is None and len(users_favs) > 0:
+            users = await User.all()
+            rows = []
+            for user in users:
+                row = await self.__make_user_row(user.id)
+                rows.append(row)
 
-        self.sparse_matrix = sparse.vstack(rows)
+            self.sparse_matrix = sparse.vstack(rows)
 
-        self.model = implicit.als.AlternatingLeastSquares(factors=16, regularization=0.0, iterations=8)
-        self.model.fit(self.sparse_matrix.T)
+            self.model = implicit.als.AlternatingLeastSquares(factors=16, regularization=0.0, iterations=8)
+            self.model.fit(self.sparse_matrix.T)
 
     async def recommend(self, user_id, number_of_stocks):
         # row = self.__make_user_row(user_id)
