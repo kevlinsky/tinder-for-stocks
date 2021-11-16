@@ -1,27 +1,28 @@
 from pydantic import BaseModel, validator
+from typing import Optional
 
 
 class ScreenerModel(BaseModel):
     public: bool = False
-    currency: str = ''
-    market_sector: str = ''
-    region: str = ''
-    index: str = ''
-    market_cap: str = ''
-    ebitda: str = ''
-    debt_equity: str = ''
-    p_e: str = ''
-    roa: str = ''
-    roe: str = ''
-    beta: str = ''
-    revenue: str = ''
-    debt: str = ''
-    expenses: str = ''
-    price: str = ''
+    currency: Optional[str]
+    market_sector: Optional[str]
+    region: Optional[str]
+    index: Optional[str]
+    market_cap: Optional[str]
+    ebitda: Optional[str]
+    debt_equity: Optional[str]
+    p_e: Optional[str]
+    roa: Optional[str]
+    roe: Optional[str]
+    beta: Optional[str]
+    revenue: Optional[str]
+    debt: Optional[str]
+    expenses: Optional[str]
+    price: Optional[str]
 
     @validator('currency')
     def check_currency(cls, value):
-        if (value == '') | (value == 'USD'):
+        if value == 'USD':
             return value
         else:
             raise ValueError('USD currency is only available')
