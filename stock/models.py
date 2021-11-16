@@ -11,7 +11,7 @@ class Stock(Base, ModelAdmin):
     currency = Column(String(3), nullable=False)
     market_sector = Column(String(255), nullable=False)
     region = Column(String(255), nullable=False)
-    index = Column(String(10), nullable=False)
+    exchange = Column(String(10), nullable=False)
     market_cap = Column(Numeric, nullable=False)
     ebitda = Column(Numeric, nullable=False)
     debt_equity = Column(Numeric, nullable=False)

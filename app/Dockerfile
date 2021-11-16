@@ -14,5 +14,6 @@ COPY . ./
 CMD python wait-postgres.py && \
     alembic upgrade head && \
     python app/init_stocks.py &&\
+    celery -A app.worker beat & \
     celery -A app.worker.celery worker -l INFO --without-gossip --without-mingle --without-heartbeat -Ofair --pool=solo & \
     uvicorn app.main:app --host 0.0.0.0 --port 8000

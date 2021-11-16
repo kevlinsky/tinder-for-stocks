@@ -7,6 +7,16 @@ from app.db import User, UserFavoriteStock
 
 
 class Recommender:
+    def __init__(self):
+        self.model = None
+        self.sparse_matrix = None
+        self.fitted = False
+
+    def __new__(cls):
+        if not hasattr(cls, 'instance'):
+            cls.instance = super(Recommender, cls).__new__(cls)
+        return cls.instance
+
     async def __make_user_row(self, user_id):
         stocks_count = await Stock.count()
         users_favs = await UserFavoriteStock.get_user_favourites(user_id)
@@ -23,7 +33,7 @@ class Recommender:
 
     async def fit(self):
         users_favs_count = await UserFavoriteStock.count()
-        if self.model is None and users_favs_count > 0:
+        if not self.fitted and users_favs_count > 0:
             users = await User.all()
             rows = []
             for user in users:
@@ -34,19 +44,20 @@ class Recommender:
 
             self.model = implicit.als.AlternatingLeastSquares(factors=16, regularization=0.0, iterations=8)
             self.model.fit(self.sparse_matrix.T)
+            self.fitted = True
 
     async def recommend(self, user_id, number_of_stocks):
-        # row = self.__make_user_row(user_id)
-        # recs = self.model.recommend(0, row, N=number_of_stocks,
-        #                             filter_already_liked_items=True,
-        #                             recalculate_user=True)
-        recs = self.model.recommend(0, self.sparse_matrix.getrow(user_id - 1), N=number_of_stocks,
+        row = self.__make_user_row(user_id)
+        recs = self.model.recommend(0, row, N=number_of_stocks,
                                     filter_already_liked_items=True,
-                                    recalculate_user=False)
+                                    recalculate_user=True)
+        # recs = self.model.recommend(0, self.sparse_matrix.getrow(user_id - 1), N=number_of_stocks,
+        #                             filter_already_liked_items=True,
+        #                             recalculate_user=False)
         return sorted([int(stock[0] + 1) for stock in recs])
 
     async def generate_weekly_digest(self):
-        if self.model is None:
+        if not self.fitted:
             await self.fit()
 
         users = await User.get_weekly_subs()
@@ -68,7 +79,7 @@ class Recommender:
         return digest
 
     async def generate_monthly_digest(self):
-        if self.model is None:
+        if not self.fitted:
             await self.fit()
 
         users = await User.get_monthly_subs()

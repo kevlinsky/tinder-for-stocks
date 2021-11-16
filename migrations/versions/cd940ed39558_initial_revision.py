@@ -1,8 +1,8 @@
-"""Initial revision
+"""initial revision
 
-Revision ID: fc40eb1d0da6
+Revision ID: cd940ed39558
 Revises: 
-Create Date: 2021-10-20 12:34:16.736156
+Create Date: 2021-11-10 16:13:03.587550
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'fc40eb1d0da6'
+revision = 'cd940ed39558'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -24,7 +24,7 @@ def upgrade():
     sa.Column('currency', sa.String(length=3), nullable=False),
     sa.Column('market_sector', sa.String(length=255), nullable=False),
     sa.Column('region', sa.String(length=255), nullable=False),
-    sa.Column('index', sa.String(length=10), nullable=False),
+    sa.Column('exchange', sa.String(length=10), nullable=False),
     sa.Column('market_cap', sa.Numeric(), nullable=False),
     sa.Column('ebitda', sa.Numeric(), nullable=False),
     sa.Column('debt_equity', sa.Numeric(), nullable=False),
@@ -59,7 +59,7 @@ def upgrade():
     sa.Column('currency', sa.String(length=9), nullable=False),
     sa.Column('market_sector', sa.String(length=1000), nullable=False),
     sa.Column('region', sa.String(length=1000), nullable=False),
-    sa.Column('index', sa.String(length=1000), nullable=False),
+    sa.Column('exchange', sa.String(length=1000), nullable=False),
     sa.Column('market_cap', sa.String(length=1000), nullable=False),
     sa.Column('ebitda', sa.String(length=1000), nullable=False),
     sa.Column('debt_equity', sa.String(length=1000), nullable=False),
