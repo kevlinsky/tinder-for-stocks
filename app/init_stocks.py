@@ -28,30 +28,33 @@ async def get_stocks_data(count_of_stocks: int = 5):
     await client.close()
 
     ticker_figi_list: List[List[str, str]] = []
-    for i in range(count_of_stocks):
+
+    while len(ticker_figi_list) < count_of_stocks:
         num = randint(0, 1000)
         instrument = response_instruments[num]
         if instrument["currency"] == "USD":
-            ticker_figi_list.append([instrument["ticker"], instrument["figi"]])
+            l = [instrument["ticker"], instrument["figi"]]
+            if l not in ticker_figi_list:
+                ticker_figi_list.append(l)
 
     crawler = Crawler(ALPHAVANTAGE_TOKEN, FINNHUB_TOKEN, ticker_figi_list)
     crawler.run()
     crawler_results = crawler.get_result()
 
-    for alpha_result, finnhub_result in crawler_results:
+    for alpha_result, finnhub_result, price_result in crawler_results:
         if "ERROR" in alpha_result:
             continue
+
         figi = ''
         for ticker, figi_ in ticker_figi_list:
-            if ticker == alpha_result["Symbol"]:
-                figi = str(figi_)
-                break
+            if ticker == alpha_result['Symbol']:
+                figi = figi_
 
         await Stock.create(market_link=f'https://www.tinkoff.ru/invest/stocks/{alpha_result["Symbol"]}',
                            currency=alpha_result["Currency"],
                            market_sector=alpha_result["Sector"],
                            region=alpha_result["Country"],
-                           index=alpha_result["Exchange"],
+                           exchange=alpha_result["Exchange"],
                            market_cap=to_numeric(alpha_result.get("MarketCapitalization", 0)),
                            ebitda=to_numeric(alpha_result.get("EBITDA", 0)),
                            debt_equity=to_numeric(finnhub_result.get("totalDebt/totalEquityAnnual", 0)),
@@ -61,10 +64,10 @@ async def get_stocks_data(count_of_stocks: int = 5):
                            beta=to_numeric(alpha_result.get("Beta", 0)),
                            revenue=to_numeric(finnhub_result.get("freeOperatingCashFlow/revenue5Y", 0)),
                            debt=to_numeric(finnhub_result.get("totalDebtCagr5Y", 0)),
-                           expenses=0,
-                           price=0,
+                           price=to_numeric(price_result.get('c', 0)),
                            figi=figi)
 
 
 if __name__ == '__main__':
-    asyncio.run(get_stocks_data())
+    event_loop = asyncio.get_event_loop()
+    event_loop.run_until_complete(get_stocks_data(count_of_stocks=5))

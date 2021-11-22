@@ -10,6 +10,4 @@ RUN pipenv install --ignore-pipfile --system --deploy
 
 COPY . ./
 
-CMD python wait-postgres.py && \
-    alembic upgrade head && \
-    pytest
+CMD pytest
