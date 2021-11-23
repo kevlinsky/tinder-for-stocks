@@ -1,6 +1,6 @@
-from sqlalchemy import String, Integer, Boolean
+from sqlalchemy import String, Integer, Boolean, select
 from sqlalchemy.sql.schema import Column, ForeignKey
-from app.db import ModelAdmin, Base
+from app.db import ModelAdmin, Base, async_db_session
 
 
 class Screener(Base, ModelAdmin):
@@ -24,3 +24,9 @@ class Screener(Base, ModelAdmin):
     debt = Column(String(1000), nullable=True)
     expenses = Column(String(1000), nullable=True)
     price = Column(String(1000), nullable=True)
+
+    @classmethod
+    async def get_user_screeners(cls, user_id):
+        query = select(cls).where(cls.owner_id == user_id)
+        results = (await async_db_session.execute(query)).scalars().all()
+        return results

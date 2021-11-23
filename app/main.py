@@ -1,23 +1,21 @@
 import logging
 import datetime
 from random import sample
-from typing import List
+
 from fastapi import FastAPI, Security, HTTPException
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from .worker import confirmation_email, password_reset
 from user.schemas import (AuthModel, SignUpModel, RefreshTokenModel, PasswordResetRequestModel,
-                          PasswordResetModel, UserScreenerModel)
+                          PasswordResetModel)
 from user.auth import Auth
 from .db import User, UserCode, CodeTargetEnum
-from screener.schemas import ScreenerModel, ShareScreenerModel
-from screener.models import Screener
-from screener.filter import filter_stocks
-from stock.schemas import StockModel
-from user.models import UserScreener
+from screener import router
+
 
 app = FastAPI()
 security = HTTPBearer()
 auth_handler = Auth()
+app.include_router(router.router)
 
 access_logger = logging.getLogger('uvicorn.access')
 error_logger = logging.getLogger('uvicorn.error')
@@ -159,122 +157,3 @@ async def secret_data(credentials: HTTPAuthorizationCredentials = Security(secur
 @app.get('/notsecret')
 async def not_secret_data():
     return {'message': 'Not secret data'}
-
-
-@app.post('/screener')
-async def create_screener(screener_details: ScreenerModel,
-                          credentials: HTTPAuthorizationCredentials = Security(security)):
-    token = credentials.credentials
-    email = auth_handler.decode_token(token)
-    user = await User.get_by_email(email)
-    if user is None:
-        return HTTPException(status_code=401, detail='User not found')
-    if user.is_active:
-        screener_id = await Screener.create(owner_id=user.id,
-                                            public=screener_details.public,
-                                            currency=screener_details.currency,
-                                            market_sector=screener_details.market_sector,
-                                            region=screener_details.region,
-                                            index=screener_details.index,
-                                            market_cap=screener_details.market_cap,
-                                            ebitda=screener_details.ebitda,
-                                            debt_equity=screener_details.debt_equity,
-                                            p_e=screener_details.p_e,
-                                            roa=screener_details.roa,
-                                            roe=screener_details.roe,
-                                            beta=screener_details.beta,
-                                            revenue=screener_details.revenue,
-                                            debt=screener_details.debt,
-                                            expenses=screener_details.expenses,
-                                            price=screener_details.price)
-        await UserScreener.create(user_id=user.id, screener_id=screener_id)
-        return {'id': screener_id, "message": "screener was successfully created"}
-    else:
-        error_msg = 'Verify your email'
-        return {'error': error_msg}
-
-
-@app.get('/screener', response_model=List[UserScreenerModel])
-async def get_user_screeners(credentials: HTTPAuthorizationCredentials = Security(security)):
-    token = credentials.credentials
-    email = auth_handler.decode_token(token)
-    user = await User.get_by_email(email)
-    screeners = await UserScreener.get_users_screeners(user.id)
-    return screeners
-
-
-@app.get('/screener/{screener_id}', response_model=List[StockModel])
-async def run_screener(screener_id: int, credentials: HTTPAuthorizationCredentials = Security(security)):
-    token = credentials.credentials
-    email = auth_handler.decode_token(token)
-    user = await User.get_by_email(email)
-    screener = await Screener.get(screener_id)
-    if (screener.owner_id == user.id) | screener.public:
-        result = await filter_stocks(screener)
-        return result
-
-
-@app.put('/screener/{screener_id}')
-async def update_screener(screener_id: int, screener_details: ScreenerModel,
-                          credentials: HTTPAuthorizationCredentials = Security(security)):
-    token = credentials.credentials
-    email = auth_handler.decode_token(token)
-    user = await User.get_by_email(email)
-    screener = await Screener.get(id=screener_id)
-    if screener.owner_id == user.id:
-        await Screener.update(screener_id,
-                              owner_id=user.id,
-                              public=screener_details.public,
-                              currency=screener_details.currency,
-                              market_sector=screener_details.market_sector,
-                              region=screener_details.region,
-                              index=screener_details.index,
-                              market_cap=screener_details.market_cap,
-                              ebitda=screener_details.ebitda,
-                              debt_equity=screener_details.debt_equity,
-                              p_e=screener_details.p_e,
-                              roa=screener_details.roa,
-                              roe=screener_details.roe,
-                              beta=screener_details.beta,
-                              revenue=screener_details.revenue,
-                              debt=screener_details.debt,
-                              expenses=screener_details.expenses,
-                              price=screener_details.price
-                              )
-        return {'message': f"screener {screener_id} was successfully updated"}
-    else:
-        error_msg = 'Sorry, you can update only your own screeners'
-        return {'error': error_msg}
-
-
-@app.delete('/screener/{screener_id}')
-async def delete_screener(screener_id: int, credentials: HTTPAuthorizationCredentials = Security(security)):
-    token = credentials.credentials
-    email = auth_handler.decode_token(token)
-    user = await User.get_by_email(email)
-    screener = await Screener.get(id=screener_id)
-    if screener.owner_id == user.id:
-        await Screener.delete(screener_id)
-        return {'message': f'Screener {screener_id} was successfully deleted'}
-    else:
-        error_msg = 'Sorry, you can delete only your own screeners'
-        return {'error': error_msg}
-
-
-@app.patch('/screener/{screener_id}')
-async def share_screener(screener_id: int, screener_share: ShareScreenerModel,
-                         credentials: HTTPAuthorizationCredentials = Security(security)):
-    token = credentials.credentials
-    email = auth_handler.decode_token(token)
-    user = await User.get_by_email(email)
-    screener = await Screener.get(id=screener_id)
-    if screener.owner_id == user.id:
-        await Screener.update(screener_id,
-                              public=screener_share.public)
-        if screener.public:
-            return {'message': f'Screener {screener_id} can be used by others now'}
-        else:
-            return {'message': f'Screener {screener_id} can not be used by others now'}
-    else:
-        error_msg = 'Sorry, you can share only your own screeners'
-        return {'error': error_msg}
