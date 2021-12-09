@@ -8,6 +8,8 @@ from app.db import Stock, Screener
 
 from asyncpg.exceptions import UndefinedTableError
 from sqlalchemy.exc import ProgrammingError
+from sqlalchemy.exc import IntegrityError
+
 from alembic.config import Config
 from alembic import command
 
@@ -28,13 +30,15 @@ def startup():
 
             await conn.close()
 
-
     asyncio.run(run())
 
 
 def migrations():
-    alembic_cfg = Config("/usr/src/alembic.ini")
-    command.upgrade(alembic_cfg, "head")
+    try:
+        alembic_cfg = Config("/usr/src/alembic.ini")
+        command.upgrade(alembic_cfg, "head")
+    except IntegrityError:
+        pass
 
     async def wait_migrations():
         nonlocal alembic_cfg
