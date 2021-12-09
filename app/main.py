@@ -2,7 +2,6 @@ import logging
 import datetime
 import os
 from random import sample
-from time import sleep
 
 from fastapi import FastAPI, Security, HTTPException
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
@@ -29,7 +28,6 @@ error_handler = logging.FileHandler(filename=os.path.join(BASE_DIR, 'logs/error_
 
 @app.on_event('startup')
 async def startup_event():
-    # sleep(10)
     error_logger.setLevel('WARNING')
 
     access_handler.setFormatter(
