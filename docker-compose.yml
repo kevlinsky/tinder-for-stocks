@@ -39,6 +39,8 @@ services:
       - celery
   nginx:
     build: ./nginx
+    volumes:
+      - ./logs:/usr/src/logs/
     ports:
       - "8000:8000"
     depends_on:
