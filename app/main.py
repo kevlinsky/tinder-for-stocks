@@ -11,7 +11,7 @@ from app.worker import confirmation_email, password_reset
 from user.schemas import (AuthModel, SignUpModel, RefreshTokenModel, PasswordResetRequestModel,
                           PasswordResetModel)
 from user.auth import Auth
-from .db import User, UserCode, CodeTargetEnum
+from app.db import User, UserCode, CodeTargetEnum
 
 app = FastAPI()
 security = HTTPBearer()
