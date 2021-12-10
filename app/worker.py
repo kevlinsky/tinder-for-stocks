@@ -10,10 +10,7 @@ from celery import Celery
 from celery.utils.log import get_task_logger
 
 from app.mail import send_monthly_digest, send_weekly_digest, send_password_reset_email, send_confirmation_email
-from app.mail import send_confirmation_email, send_password_reset_email
-
 from app.init_stocks import TINVEST_TOKEN
-
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -71,9 +68,6 @@ def stocks_update():
     asyncio.run(retrieve())
 
 
-celery.add_periodic_task(60.0, stocks_update.s(), name='add-every-minute-update-stocks')
-
-
 @celery.task(name='weekly_digest')
 def weekly_digest():
     asyncio.get_event_loop().run_until_complete(send_weekly_digest())
@@ -88,5 +82,6 @@ def monthly_digest():
     return {'message': 'Monthly digest has been sent'}
 
 
+celery.add_periodic_task(60.0, stocks_update.s(), name='add-every-minute-update-stocks')
 celery.add_periodic_task(60.0 * 60.0 * 24.0 * 7.0, weekly_digest.s(), name='send-weekly-digest-every-7-days')
 celery.add_periodic_task(60.0 * 60.0 * 24.0 * 7.0 * 30.0, monthly_digest.s(), name='send-monthly-digest-every-30-days')
