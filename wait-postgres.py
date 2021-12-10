@@ -61,5 +61,6 @@ def migrations():
     asyncio.run(wait_migrations())
 
 
-startup()
-migrations()
+if __name__ == '__main__':
+    startup()
+    migrations()
