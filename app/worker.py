@@ -27,14 +27,14 @@ logger.addHandler(logger_handler)
 
 @celery.task(name='confirmation_email')
 def confirmation_email(email_to: str, hash: str):
-    asyncio.get_event_loop().run_until_complete(send_confirmation_email(email_to, hash))
+    asyncio.run(send_confirmation_email(email_to, hash))
     logger.info(f"confirmation email to {email_to} has been sent")
     return {'message': f'Confirmation email to {email_to} has been sent'}
 
 
 @celery.task(name='password_reset')
 def password_reset(email_to: str, code: int):
-    asyncio.get_event_loop().run_until_complete(send_password_reset_email(email_to, code))
+    asyncio.run(send_password_reset_email(email_to, code))
     logger.info(f"password reset to {email_to} has been sent")
     return {'message': f'Password reset email to {email_to} has been sent'}
 
@@ -70,14 +70,14 @@ def stocks_update():
 
 @celery.task(name='weekly_digest')
 def weekly_digest():
-    asyncio.get_event_loop().run_until_complete(send_weekly_digest())
+    asyncio.run(send_weekly_digest())
     logger.info('Weekly digest has been sent')
     return {'message': 'Weekly digest has been sent'}
 
 
 @celery.task(name='monthly_digest')
 def monthly_digest():
-    asyncio.get_event_loop().run_until_complete(send_monthly_digest())
+    asyncio.run(send_monthly_digest())
     logger.info('Monthly digest has been sent')
     return {'message': 'Monthly digest has been sent'}
 
