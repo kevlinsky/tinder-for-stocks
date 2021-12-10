@@ -39,7 +39,7 @@ alembic upgrade head
 redis-server
 ```
 
-5. Run Celery worker and Celery Beat
+5. Run Celery worker and Celery beat
 ```
 celery -A app.worker beat & \
 celery -A app.worker.celery worker -l INFO --without-gossip --without-mingle --without-heartbeat -Ofair --pool=solo
