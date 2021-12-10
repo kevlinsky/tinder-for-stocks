@@ -13,7 +13,7 @@ cp .env.example .env
 ```
 2. Run it with command:
 ```
-docker-compose up
+docker-compose up --scale web=3
 ```
 3. Open the **http://0.0.0.0:8000**
 
@@ -39,8 +39,9 @@ alembic upgrade head
 redis-server
 ```
 
-5. Run Celery worker
+5. Run Celery worker and Celery Beat
 ```
+celery -A app.worker beat & \
 celery -A app.worker.celery worker -l INFO --without-gossip --without-mingle --without-heartbeat -Ofair --pool=solo
 ```
 
