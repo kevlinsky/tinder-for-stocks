@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Weekly Digest</title>
+</head>
+<body>
+    <h2>Hi, {{ first_name }}! There is your weekly digest with recommended stocks</h2>
+    <div>
+        <ul>
+            {% for stock in stocks %}
+                <li>
+                    <p><b>Ticker:</b> {{ stock.market_link.split('/')[-1] }}</p>
+                    <p><b>Region:</b> {{ stock.region }}</p>
+                    <p><b>Market sector:</b> {{ stock.market_sector }}</p>
+                    <p><b>Index:</b> {{ stock.index }}</p>
+                    <p><b>Price:</b> {{ stock.price }}</p>
+                    <p><b>Currency:</b> {{ stock.currency }}</p>
+                    <p><b>Link: </b> {{ stock.market_link }}</p>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+</body>
+</html>

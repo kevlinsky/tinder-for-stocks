@@ -1,4 +1,5 @@
 import logging
+import os
 import urllib.request
 import urllib.error
 import json
@@ -6,14 +7,16 @@ from typing import List, Dict, Tuple, Union
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from time import sleep
 
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
 
 class Crawler:
     MAX_WORKERS = 5
     CLIENT_TIMEOUT = 30
 
     __logger = logging.getLogger(__name__)
-    __access_handler = logging.FileHandler(filename='./logs/access_api.log', mode='a')
-    __error_handler = logging.FileHandler(filename='./logs/error_api.log', mode='a')
+    __access_handler = logging.FileHandler(filename=os.path.join(BASE_DIR, 'logs/access_api.log'), mode='a')
+    __error_handler = logging.FileHandler(filename=os.path.join(BASE_DIR, 'logs/error_api.log'), mode='a')
     __access_handler.setFormatter(
         logging.Formatter("%(levelname)s: [%(asctime)s] - %(message)s", datefmt="%Y-%m-%d %H:%M:%S"))
     __error_handler.setFormatter(
@@ -30,21 +33,24 @@ class Crawler:
         self.request_limit: int = request_limit
         self.results: List[List[Dict]] = []
 
-    def handling_urls(self, ticker: str) -> Tuple[Dict, Dict]:
+    def handling_urls(self, ticker: str) -> Tuple[Dict, Dict, Dict]:
         url_alpha = f'https://www.alphavantage.co/query?function=OVERVIEW&symbol={ticker}&apikey={self.token_alpha}'
         url_finnhub = f'https://finnhub.io/api/v1/stock/metric?symbol={ticker}&metric=all&token={self.token_finnhub}'
+        url_price = f'https://finnhub.io/api/v1/quote?symbol={ticker}&token={self.token_finnhub}'
         try:
             response_alpha = urllib.request.urlopen(url_alpha, timeout=Crawler.CLIENT_TIMEOUT)
             response_finnhub = urllib.request.urlopen(url_finnhub, timeout=Crawler.CLIENT_TIMEOUT)
+            response_price = urllib.request.urlopen(url_price, timeout=Crawler.CLIENT_TIMEOUT)
             Crawler.__logger.info(f"GET response from APIs: {url_alpha}, {url_finnhub}")
         except (urllib.error.URLError, urllib.error.HTTPError, Exception) as exc:
             Crawler.__logger.error(exc, exc_info=True)
-            return {"Symbol": ticker, "ERROR": "CHECK LOGS"}, {"Symbol": ticker, "ERROR": "CHECK LOGS"}
+            return {"Symbol": ticker, "ERROR": "CHECK LOGS"}, {"Symbol": ticker, "ERROR": "CHECK LOGS"}, {"Symbol": ticker, "ERROR": "CHECK LOGS"}
         response_json_alpha = json.loads(response_alpha.read().decode('utf-8'))
         response_json_finnhub = json.loads(response_finnhub.read().decode('utf-8'))["metric"]
-        if not response_json_finnhub or not response_json_alpha:
-            return {}, {}
-        return response_json_alpha, response_json_finnhub
+        response_json_price = json.loads(response_price.read().decode('utf-8'))
+        if not response_json_finnhub or not response_json_alpha or not response_json_price:
+            return {}, {}, {}
+        return response_json_alpha, response_json_finnhub, response_json_price
 
     def run(self):
         limit_list_stocks: List[str] = []
@@ -59,10 +65,10 @@ class Crawler:
                 futures = {executor.submit(self.handling_urls, ticker): ticker for ticker in limit_list_stocks}
 
                 for future in as_completed(futures):
-                    response_json_alpha, response_json_finnhub = future.result()
-                    if not response_json_alpha or not response_json_finnhub:
+                    response_json_alpha, response_json_finnhub, response_price = future.result()
+                    if not response_json_alpha or not response_json_finnhub or not response_price:
                         continue
-                    self.results.append([response_json_alpha, response_json_finnhub])
+                    self.results.append([response_json_alpha, response_json_finnhub, response_price])
 
             count_stocks = 0
             limit_list_stocks.clear()

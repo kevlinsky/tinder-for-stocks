@@ -1,6 +1,7 @@
 from fastapi_mail import FastMail, MessageSchema, ConnectionConfig
 import os
 from jinja2 import Environment, PackageLoader, select_autoescape
+from stock.recommender import Recommender
 
 env = Environment(
     loader=PackageLoader('app', 'email_templates'),
@@ -47,3 +48,35 @@ async def send_password_reset_email(email_to: str, code: int):
 
     fm = FastMail(conf)
     await fm.send_message(message)
+
+
+async def send_weekly_digest():
+    digest = await Recommender().generate_weekly_digest()
+    fm = FastMail(conf)
+    template = env.get_template('weekly_digest.html')
+
+    for pair in digest:
+        message = MessageSchema(
+            subject='Weekly digest',
+            recipients=[pair['user'].email],
+            html=template.render(first_name=pair['user'].first_name, stocks=pair['stocks']),
+            subtype='html',
+        )
+
+        await fm.send_message(message)
+
+
+async def send_monthly_digest():
+    digest = await Recommender().generate_monthly_digest()
+    fm = FastMail(conf)
+    template = env.get_template('monthly_digest.html')
+
+    for pair in digest:
+        message = MessageSchema(
+            subject='Monthly digest',
+            recipients=[pair['user'].email],
+            html=template.render(first_name=pair['user'].first_name, stocks=pair['stocks']),
+            subtype='html',
+        )
+
+        await fm.send_message(message)

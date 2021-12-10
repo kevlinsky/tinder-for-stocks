@@ -12,5 +12,4 @@ RUN pipenv install --ignore-pipfile --system --deploy
 
 COPY . ./
 
-CMD python wait-postgres.py && \
-    pytest
+CMD pytest
