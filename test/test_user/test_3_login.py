@@ -1,6 +1,6 @@
 from requests import post
 from app.main import auth_handler
-from test.test_1_user_signup import user_test_data
+from test.test_user.test_1_user_signup import user_test_data
 
 
 user_test_data_not_verified = {'email': 'stttfeerkty7@neaeo.com', 'password': 'pass23', 'first_name': 'Gunaz',

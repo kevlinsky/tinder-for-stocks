@@ -63,8 +63,3 @@ def test_signup_invalid_email():
     assert response.status_code == 422
     assert response.json() == {'detail': [{'loc': ['body', 'email'], 'msg': 'value is not a valid email address',
                                            'type': 'value_error.email'}]}
-
-
-
-
-

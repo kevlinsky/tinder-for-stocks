@@ -1,6 +1,6 @@
 from requests import get
 from app.main import auth_handler
-from test.test_1_user_signup import user_test_data
+from test.test_user.test_1_user_signup import user_test_data
 
 
 def test_confirm_email():
@@ -14,4 +14,3 @@ def test_confirm_email():
 def test_confirm_invalid_token():
     response = get('http://web:8000/email-confirm/fake-token')
     assert response.json() == {"detail": "Invalid token"}
-

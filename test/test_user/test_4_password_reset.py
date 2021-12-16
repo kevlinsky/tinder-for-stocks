@@ -1,7 +1,7 @@
 import asyncio
 import aiopg
 from requests import post
-from test.test_1_user_signup import user_test_data
+from test.test_user.test_1_user_signup import user_test_data
 import time
 import os
 
@@ -41,7 +41,3 @@ def test_password_reset():
                                                              "new_password": 'newpass'})
     assert response.status_code == 200
     assert response.json() == {'message': 'Password was changed successfully'}
-
-
-
-
