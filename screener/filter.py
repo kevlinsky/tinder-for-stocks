@@ -1,7 +1,7 @@
-from screener.models import Screener
 from stock.models import Stock
 from app.db import async_db_session
 from sqlalchemy import select
+from screener.models import Screener
 
 
 async def filter_stocks(screener: Screener):

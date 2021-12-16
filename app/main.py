@@ -5,20 +5,18 @@ from random import sample
 
 from fastapi import FastAPI, Security, HTTPException
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
-
-from screener import router
-
 from stock.recommender import Recommender
 from app.worker import confirmation_email, password_reset
 from user.schemas import (AuthModel, SignUpModel, RefreshTokenModel, PasswordResetRequestModel,
                           PasswordResetModel)
 from user.auth import Auth
-from app.db import User, UserCode, CodeTargetEnum
+from user.models import User, UserCode, CodeTargetEnum
+from app import screener_router
 
 app = FastAPI()
 security = HTTPBearer()
 auth_handler = Auth()
-app.include_router(router.router)
+app.include_router(screener_router.router)
 recommender = Recommender()
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))

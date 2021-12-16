@@ -2,15 +2,15 @@ from typing import List
 
 from fastapi import APIRouter
 
-from screener.filter import filter_stocks
 from stock.schemas import StockModel
 from user.auth import Auth
-from app.db import User
+from user.models import User
 from screener.schemas import ScreenerModel, ShareScreenerModel
 from user.models import UserScreener
 from screener.models import Screener
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from fastapi import Security, HTTPException
+from screener.filter import filter_stocks
 
 router = APIRouter(prefix="/screener", tags=["screeners"])
 auth_handler = Auth()

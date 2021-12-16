@@ -7,7 +7,7 @@ import tinvest
 from random import randint
 from typing import List, Dict
 
-from app.db import Stock
+from stock.models import Stock
 from app.crawler import Crawler
 
 TINVEST_TOKEN = os.environ.get("TINVEST_TOKEN")

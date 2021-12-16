@@ -3,8 +3,9 @@ import asyncpg
 from os import environ
 from time import sleep
 
-from app.db import User, UserFavoriteStock, UserCode, UserScreener, UserStockNotifier
-from app.db import Stock, Screener
+from user.models import User, UserFavoriteStock, UserCode, UserScreener, UserStockNotifier
+from stock.models import Stock
+from screener.models import Screener
 
 from asyncpg.exceptions import UndefinedTableError
 from sqlalchemy.exc import ProgrammingError
