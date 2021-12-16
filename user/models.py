@@ -6,6 +6,12 @@ import datetime
 from app.db import Base, async_db_session, ModelAdmin
 
 
+class SubscriptionTypeEnum(enum.Enum):
+    NOT_SUBSCRIBED = 'not_subscribed'
+    WEEKLY = 'weekly'
+    MONTHLY = 'monthly'
+
+
 class User(Base, ModelAdmin):
     __tablename__ = 'users'
 
@@ -15,7 +21,7 @@ class User(Base, ModelAdmin):
     email = Column(String(100), nullable=False, unique=True)
     password = Column(String(255), nullable=False)
     is_active = Column(Boolean, default=False)
-    updates_subscribed = Column(Boolean, default=False)
+    updates_subscription_type = Column(Enum(SubscriptionTypeEnum), default=SubscriptionTypeEnum.NOT_SUBSCRIBED)
     date_joined = Column(Date, default=datetime.datetime.now())
 
     @classmethod
@@ -27,6 +33,18 @@ class User(Base, ModelAdmin):
             result = results[0]
         return result
 
+    @classmethod
+    async def get_weekly_subs(cls):
+        query = select(cls).where(cls.updates_subscription_type == SubscriptionTypeEnum.WEEKLY)
+        results = (await async_db_session.execute(query)).scalars().all()
+        return results
+
+    @classmethod
+    async def get_monthly_subs(cls):
+        query = select(cls).where(cls.updates_subscription_type == SubscriptionTypeEnum.MONTHLY)
+        results = (await async_db_session.execute(query)).scalars().all()
+        return results
+
 
 class UserFavoriteStock(Base, ModelAdmin):
     __tablename__ = 'users_favorite_stocks'
@@ -34,6 +52,12 @@ class UserFavoriteStock(Base, ModelAdmin):
     id = Column(Integer, primary_key=True, index=True, unique=True, autoincrement=True, nullable=False)
     user_id = Column(Integer, ForeignKey('users.id', ondelete='CASCADE'), nullable=False)
     stock_id = Column(Integer, ForeignKey('stocks.id', ondelete='CASCADE'), nullable=False)
+
+    @classmethod
+    async def get_user_favourites(cls, user_id):
+        query = select(cls).where(cls.user_id == user_id)
+        results = (await async_db_session.execute(query)).scalars().all()
+        return results
 
 
 class UserStockNotifier(Base, ModelAdmin):
