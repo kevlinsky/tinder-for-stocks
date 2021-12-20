@@ -23,7 +23,7 @@ def create_access_token():
     return access_token
 
 
-test_token = create_access_token()
+
 
 
 async def get_screener_id():
@@ -42,20 +42,20 @@ async def get_screener_id():
 
 
 async def create_screener():
-    response = post(path, json=test_screener_data, headers={"Authorization": "Bearer" + test_token})
+    response = post(path, json=test_screener_data, headers={"Authorization": "Bearer" + create_access_token()})
     screener_id = response.json()['id']
     return await Screener.get(screener_id)
 
 
 def test_create_screener():
-    response = post(path, json=test_screener_data, headers={"Authorization": "Bearer" + test_token})
+    response = post(path, json=test_screener_data, headers={"Authorization": "Bearer" + create_access_token()})
     assert response.status_code == 200
     assert response.json() == {'id': asyncio.run(get_screener_id()), "message": "screener was successfully created"}
 
 
 async def test_get_screeners():
-    response = get(path, headers={"Authorization": "Bearer" + test_token})
-    email = auth_handler.decode_token(test_token)
+    response = get(path, headers={"Authorization": "Bearer" + create_access_token()})
+    email = auth_handler.decode_token(create_access_token())
     user = await User.get_by_email(email)
     screeners = await Screener.get_user_screeners(user.id)
     assert response.status_code == 200
@@ -64,7 +64,7 @@ async def test_get_screeners():
 
 async def test_run_screener():
     screener = create_screener()
-    response = get(path + screener.id, headers={"Authorization": "Bearer" + test_token})
+    response = get(path + screener.id, headers={"Authorization": "Bearer" + create_access_token()})
     result = await filter_stocks(screener)
     assert response.status_code == 200
     assert response.json() == result

@@ -41,6 +41,5 @@ test_screener_data = {
     "roe": "0 - 1",
     "beta": "1 - 2",
     "revenue": "4 - 5",
-    "debt": "92 - 95",
-    "price": ""
+    "debt": "92 - 95"
 }
