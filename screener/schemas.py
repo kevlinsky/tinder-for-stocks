@@ -8,7 +8,7 @@ class ScreenerModel(BaseModel):
     currency: Optional[str]
     market_sector: Optional[str]
     region: Optional[str]
-    index: Optional[str]
+    exchange: Optional[str]
     market_cap: Optional[str]
     ebitda: Optional[str]
     debt_equity: Optional[str]
@@ -18,7 +18,6 @@ class ScreenerModel(BaseModel):
     beta: Optional[str]
     revenue: Optional[str]
     debt: Optional[str]
-    expenses: Optional[str]
     price: Optional[str]
 
     class Config:
@@ -59,19 +58,19 @@ class ScreenerModel(BaseModel):
         else:
             return value
 
-    @validator('index')
+    @validator('exchange')
     def check_index(cls, value):
         if value:
-            indexes_available = ['NYSE', 'NASDAQ']
-            indexes = set(value.split(', '))
-            if indexes.issubset(indexes_available):
+            exchanges_available = ['NYSE', 'NASDAQ']
+            exchanges = set(value.split(', '))
+            if exchanges.issubset(exchanges_available):
                 return value
             else:
                 raise ValueError('Wrong index')
         else:
             return value
 
-    @validator('market_cap', 'ebitda', 'debt_equity', 'p_e', 'roa', 'roe', 'beta', 'revenue', 'debt', 'expenses', 'price')
+    @validator('market_cap', 'ebitda', 'debt_equity', 'p_e', 'roa', 'roe', 'beta', 'revenue', 'debt', 'price')
     def check_interval_field(cls, value):
         if value:
             values = value.split(' - ')

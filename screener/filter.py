@@ -5,7 +5,7 @@ from screener.models import Screener
 
 
 async def filter_stocks(screener: Screener):
-    screener_str_fields = ['currency', 'market_sector', 'region', 'index']
+    screener_str_fields = ['currency', 'market_sector', 'region', 'exchange']
 
     screener_str_dct = {}
     for name in screener_str_fields:

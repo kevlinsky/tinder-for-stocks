@@ -59,7 +59,7 @@ def upgrade():
     sa.Column('currency', sa.String(length=9), nullable=True),
     sa.Column('market_sector', sa.String(length=1000), nullable=True),
     sa.Column('region', sa.String(length=1000), nullable=True),
-    sa.Column('index', sa.String(length=1000), nullable=True),
+    sa.Column('exchange', sa.String(length=1000), nullable=True),
     sa.Column('market_cap', sa.String(length=1000), nullable=True),
     sa.Column('ebitda', sa.String(length=1000), nullable=True),
     sa.Column('debt_equity', sa.String(length=1000), nullable=True),
@@ -69,7 +69,6 @@ def upgrade():
     sa.Column('beta', sa.String(length=1000), nullable=True),
     sa.Column('revenue', sa.String(length=1000), nullable=True),
     sa.Column('debt', sa.String(length=1000), nullable=True),
-    sa.Column('expenses', sa.String(length=1000), nullable=True),
     sa.Column('price', sa.String(length=1000), nullable=True),
     sa.ForeignKeyConstraint(['owner_id'], ['users.id'], ondelete='RESTRICT'),
     sa.PrimaryKeyConstraint('id')
