@@ -31,7 +31,7 @@ async def create_screener(screener_details: ScreenerModel,
                                             currency=screener_details.currency,
                                             market_sector=screener_details.market_sector,
                                             region=screener_details.region,
-                                            index=screener_details.index,
+                                            exchange=screener_details.exchange,
                                             market_cap=screener_details.market_cap,
                                             ebitda=screener_details.ebitda,
                                             debt_equity=screener_details.debt_equity,
@@ -41,7 +41,6 @@ async def create_screener(screener_details: ScreenerModel,
                                             beta=screener_details.beta,
                                             revenue=screener_details.revenue,
                                             debt=screener_details.debt,
-                                            expenses=screener_details.expenses,
                                             price=screener_details.price)
         user_screener = await UserScreener.create(user_id=user.id, screener_id=screener_id)
         if user_screener:
