@@ -10,3 +10,5 @@ COPY Pipfile Pipfile.lock ./
 RUN pipenv install --ignore-pipfile --system --deploy
 
 COPY . ./
+
+CMD pytest

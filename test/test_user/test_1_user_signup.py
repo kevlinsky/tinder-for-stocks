@@ -4,8 +4,11 @@ from requests import get, post
 import os
 
 
+server_path = 'http://web:8080'
+
+
 def test_index():
-    response = get("http://web:8000/")
+    response = get(server_path + '/')
     assert response.status_code == 200
     assert response.json() == {"hello": "world"}
 
@@ -43,14 +46,14 @@ async def get_existed_user_data():
 
 
 def test_signup():
-    response = post('http://web:8000/signup', json=user_test_data)
+    response = post(server_path + '/signup', json=user_test_data)
     assert response.status_code == 200
     assert response.json() == {"id": asyncio.run(get_user_id()),
                                'message': 'Link for email verification was sent to specified email address'}
 
 
 def test_signup_already_exists():
-    response = post('http://web:8000/signup', json=asyncio.run(get_existed_user_data()))
+    response = post(server_path + '/signup', json=asyncio.run(get_existed_user_data()))
     assert response.status_code == 200
     assert response.json() == {"error": "Account already exists"}
 
@@ -60,7 +63,7 @@ user_test_data_invalid_email = {'email': 'mrrrrrrrrrr', 'password': 'pass23', 'f
 
 
 def test_signup_invalid_email():
-    response = post('http://web:8000/signup', json=user_test_data_invalid_email)
+    response = post(server_path + '/signup', json=user_test_data_invalid_email)
     assert response.status_code == 422
     assert response.json() == {'detail': [{'loc': ['body', 'email'], 'msg': 'value is not a valid email address',
                                            'type': 'value_error.email'}]}

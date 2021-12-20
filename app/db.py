@@ -83,14 +83,3 @@ class ModelAdmin:
         query = select(cls)
         results = (await async_db_session.execute(query)).scalars().all()
         return len(results)
-
-# Imports for alembic autogenerate function
-from user.models import (User,
-                         UserScreener,
-                         UserStockNotifier,
-                         UserFavoriteStock,
-                         UserCode,
-                         CodeTargetEnum,
-                         SubscriptionTypeEnum)
-from stock.models import Stock
-from screener.models import Screener
