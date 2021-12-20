@@ -1,6 +1,6 @@
 from requests import post, get
 from app.main import auth_handler
-from test.test_user.test_data import server_path, login_user_test_data_not_verified, login_user_test_data
+from test.test_data import server_path, login_user_test_data_not_verified, login_user_test_data
 
 
 def test_login_user_not_found():

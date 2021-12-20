@@ -2,7 +2,7 @@ import aiopg
 import asyncio
 from requests import get, post
 import os
-from test.test_user.test_data import server_path, signup_user_test_data, signup_user_test_invalid_data
+from test.test_data import server_path, signup_user_test_data, signup_user_test_invalid_data
 
 
 async def get_user_id():

@@ -12,7 +12,7 @@ class Screener(Base, ModelAdmin):
     currency = Column(String(9), nullable=True)
     market_sector = Column(String(1000), nullable=True)
     region = Column(String(1000), nullable=True)
-    index = Column(String(1000), nullable=True)
+    exchange = Column(String(1000), nullable=True)
     market_cap = Column(String(1000), nullable=True)
     ebitda = Column(String(1000), nullable=True)
     debt_equity = Column(String(1000), nullable=True)
@@ -22,7 +22,6 @@ class Screener(Base, ModelAdmin):
     beta = Column(String(1000), nullable=True)
     revenue = Column(String(1000), nullable=True)
     debt = Column(String(1000), nullable=True)
-    expenses = Column(String(1000), nullable=True)
     price = Column(String(1000), nullable=True)
 
     @classmethod

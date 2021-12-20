@@ -3,7 +3,7 @@ import aiopg
 from requests import post, get
 
 from app.main import auth_handler
-from test.test_user.test_data import server_path, password_reset_user_test_data
+from test.test_data import server_path, password_reset_user_test_data
 import time
 import os
 
