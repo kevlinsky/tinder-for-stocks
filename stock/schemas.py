@@ -8,7 +8,7 @@ class StockModel(BaseModel):
     currency: str
     market_sector: str
     region: str
-    index: str
+    exchange: str
     market_cap: decimal.Decimal
     ebitda: decimal.Decimal
     debt_equity: decimal.Decimal
@@ -18,7 +18,6 @@ class StockModel(BaseModel):
     beta: decimal.Decimal
     revenue: decimal.Decimal
     debt: decimal.Decimal
-    expenses: decimal.Decimal
     price: decimal.Decimal
     figi: str
 

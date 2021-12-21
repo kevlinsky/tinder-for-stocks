@@ -86,7 +86,6 @@ async def update_screener(screener_id: int, screener_details: ScreenerModel,
     screener = await Screener.get(id=screener_id)
     screener_dict = screener_details.dict()
     update_fields = {k: v for k, v in screener_dict.items() if v is not None}
-    print(screener_details, update_fields)
     if screener:
         if screener.owner_id == user.id:
             await Screener.update(screener_id, **update_fields)

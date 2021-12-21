@@ -46,30 +46,6 @@ class ScreenerModel(BaseModel):
         else:
             return value
 
-    @validator('region')
-    def check_region(cls, value):
-        if value:
-            regions_available = ['USA']
-            regions = set(value.split(', '))
-            if regions.issubset(regions_available):
-                return value
-            else:
-                raise ValueError('Wrong region')
-        else:
-            return value
-
-    @validator('exchange')
-    def check_index(cls, value):
-        if value:
-            exchanges_available = ['NYSE', 'NASDAQ']
-            exchanges = set(value.split(', '))
-            if exchanges.issubset(exchanges_available):
-                return value
-            else:
-                raise ValueError('Wrong index')
-        else:
-            return value
-
     @validator('market_cap', 'ebitda', 'debt_equity', 'p_e', 'roa', 'roe', 'beta', 'revenue', 'debt', 'price')
     def check_interval_field(cls, value):
         if value:
