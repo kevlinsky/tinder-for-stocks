@@ -76,6 +76,12 @@ class UserScreener(Base, ModelAdmin):
     user_id = Column(Integer, ForeignKey('users.id', ondelete='CASCADE'), nullable=False)
     screener_id = Column(Integer, ForeignKey('screeners.id', ondelete='CASCADE'), nullable=False)
 
+    @classmethod
+    async def get_users_screeners(cls, user_id):
+        query = select(cls).where(cls.user_id == user_id)
+        results = (await async_db_session.execute(query)).scalars().all()
+        return results
+
 
 class CodeTargetEnum(enum.Enum):
     EMAIL_VERIFICATION = 'email_verification'

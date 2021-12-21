@@ -2,8 +2,8 @@ import numpy as np
 from scipy import sparse
 import implicit
 
-from app.db import Stock
-from app.db import User, UserFavoriteStock
+from stock.models import Stock
+from user.models import User, UserFavoriteStock
 
 
 class Recommender:

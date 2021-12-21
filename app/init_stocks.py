@@ -7,7 +7,7 @@ import tinvest
 from random import randint
 from typing import List, Dict
 
-from app.db import Stock
+from stock.models import Stock
 from app.crawler import Crawler
 
 TINVEST_TOKEN = os.environ.get("TINVEST_TOKEN")
@@ -42,7 +42,7 @@ async def get_stocks_data(count_of_stocks: int = 5):
     crawler_results = crawler.get_result()
 
     for alpha_result, finnhub_result, price_result in crawler_results:
-        if "ERROR" in alpha_result:
+        if "ERROR" in alpha_result or 'Symbol' not in alpha_result:
             continue
 
         figi = ''

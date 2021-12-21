@@ -1,17 +1,17 @@
-from requests import get
+from requests import get, post
 from app.main import auth_handler
-from test.test_1_user_signup import user_test_data
+from test.test_data import server_path, confirm_user_test_data
 
 
 def test_confirm_email():
-    user_email = user_test_data['email']
+    post(server_path + '/signup', json=confirm_user_test_data)
+    user_email = confirm_user_test_data['email']
     user_hash = auth_handler.encode_confirm_token(user_email)
-    response = get(f'http://web:8000/email-confirm/{user_hash}')
+    response = get(server_path + f'/email-confirm/{user_hash}')
     assert response.status_code == 200
     assert response.json() == {"message": f"Email {user_email} successfully confirmed"}
 
 
 def test_confirm_invalid_token():
-    response = get('http://web:8000/email-confirm/fake-token')
+    response = get(server_path + '/email-confirm/fake-token')
     assert response.json() == {"detail": "Invalid token"}
-

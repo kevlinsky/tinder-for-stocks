@@ -45,3 +45,11 @@ class PasswordResetModel(BaseModel):
             return value
         else:
             raise ValueError('Password length must be between 6 and 20 characters')
+
+
+class UserScreenerModel(BaseModel):
+    screener_id: int
+    user_id: int
+
+    class Config:
+        orm_mode = True

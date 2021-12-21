@@ -1,21 +1,25 @@
 import asyncio
 import aiopg
-from requests import post
-from test.test_1_user_signup import user_test_data
+from requests import post, get
+
+from app.main import auth_handler
+from test.test_data import server_path, password_reset_user_test_data
 import time
 import os
 
-email_not_found = "notfound@gmail.com"
-
 
 def test_password_reset_request():
-    response = post('http://web:8000/password-reset/request', json={"email": user_test_data['email']})
+    post(server_path + '/signup', json=password_reset_user_test_data)
+    user_email = password_reset_user_test_data['email']
+    user_hash = auth_handler.encode_confirm_token(user_email)
+    get(server_path + f'/email-confirm/{user_hash}')
+    response = post(server_path + '/password-reset/request', json={"email": password_reset_user_test_data['email']})
     assert response.status_code == 200
     assert response.json() == {'message': 'Reset code was sent on specified email'}
 
 
 def test_password_reset_request_user_not_found():
-    response = post('http://web:8000/password-reset/request', json={"email": email_not_found})
+    response = post(server_path + '/password-reset/request', json={"email": "not_found_email@gmail.com"})
     assert response.status_code == 200
     assert response.json() == {"status_code": 401, "detail": "User not found", "headers": None}
 
@@ -36,12 +40,8 @@ async def get_reset_code():
 
 
 def test_password_reset():
-    response = post('http://web:8000/password-reset/', json={"email": user_test_data['email'],
+    response = post(server_path + '/password-reset/', json={"email": password_reset_user_test_data['email'],
                                                              "code": asyncio.run(get_reset_code()),
                                                              "new_password": 'newpass'})
     assert response.status_code == 200
     assert response.json() == {'message': 'Password was changed successfully'}
-
-
-
-

@@ -2,16 +2,7 @@ import aiopg
 import asyncio
 from requests import get, post
 import os
-
-
-def test_index():
-    response = get("http://web:8000/")
-    assert response.status_code == 200
-    assert response.json() == {"hello": "world"}
-
-
-user_test_data = {'email': 'sensitizers@vicceo.com', 'password': 'pass23', 'first_name': 'Gunaz',
-                  'last_name': 'Amirkhanova'}
+from test.test_data import server_path, signup_user_test_data, signup_user_test_invalid_data
 
 
 async def get_user_id():
@@ -42,25 +33,27 @@ async def get_existed_user_data():
     return user_exists_data
 
 
+def test_index():
+    response = get(server_path + '/')
+    assert response.status_code == 200
+    assert response.json() == {"hello": "world"}
+
+
 def test_signup():
-    response = post('http://web:8000/signup', json=user_test_data)
+    response = post(server_path + '/signup', json=signup_user_test_data)
     assert response.status_code == 200
     assert response.json() == {"id": asyncio.run(get_user_id()),
                                'message': 'Link for email verification was sent to specified email address'}
 
 
 def test_signup_already_exists():
-    response = post('http://web:8000/signup', json=asyncio.run(get_existed_user_data()))
+    response = post(server_path + '/signup', json=asyncio.run(get_existed_user_data()))
     assert response.status_code == 200
     assert response.json() == {"error": "Account already exists"}
 
 
-user_test_data_invalid_email = {'email': 'mrrrrrrrrrr', 'password': 'pass23', 'first_name': 'Gunaz',
-                                'last_name': 'Amirkhanova'}
-
-
 def test_signup_invalid_email():
-    response = post('http://web:8000/signup', json=user_test_data_invalid_email)
+    response = post(server_path + '/signup', json=signup_user_test_invalid_data)
     assert response.status_code == 422
     assert response.json() == {'detail': [{'loc': ['body', 'email'], 'msg': 'value is not a valid email address',
                                            'type': 'value_error.email'}]}
